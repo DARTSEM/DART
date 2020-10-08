@@ -3,10 +3,7 @@ package DART;
 import DART.enums.MembershipEnum;
 import DART.enums.ProductType;
 import DART.miscellaneous.Utilities;
-import DART.models.Customer;
-import DART.models.Employee;
-import DART.models.Manager;
-import DART.models.Message;
+import DART.models.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
@@ -20,6 +17,7 @@ public class DartController {
     public static ArrayList<Customer> customers = new ArrayList<Customer>();
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
+    public ArrayList<Rental> rentals = new ArrayList<Rental>();
 
     public DartController() {
 
@@ -39,7 +37,8 @@ public class DartController {
 
     public static void exampleProducts() {
         Employee employee = new Employee();
-        Album dudebro = new Album("Mongolian Thicc Throat Remastered", "Altansukh", 2000, 123);
+        Album dudebro = new Album("Mongolian Thicc Throat Remastered", "Altansukh", 2000,
+                123);
         employee.addAlbum(dudebro, products);
         Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3);
         Game example2Game = new Game("Groundrim", "Adventure", 100.0);
@@ -51,8 +50,10 @@ public class DartController {
 
     public static void exampleEmployees() {
         Manager manager = new Manager();
-        Employee exampleEmployee = new Employee("Daniel", "McWorker", 2000, "Bruh Street", "Sideway Boulevard", 30000);
-        Employee example2Employee = new Employee("Toshiba", "McWorker", 1970, "Dog Street", "Phone Property", 27500);
+        Employee exampleEmployee = new Employee("Daniel", "McWorker", 2000,
+                "Bruh Street", "Sideway Boulevard", 30000);
+        Employee example2Employee = new Employee("Toshiba", "McWorker", 1970,
+                "Dog Street", "Phone Property", 27500);
         manager.addEmployee(exampleEmployee, employees);
         manager.addEmployee(example2Employee, employees);
     }
@@ -198,7 +199,8 @@ public class DartController {
                                 int option2 = intInput("If you would like to remove an employee, press 1.");
                                 switch (option2) {
                                     case 1 -> {
-                                        String uuid = stringInput("Please enter the ID of the employee you want to remove:");
+                                        String uuid = stringInput("Please enter the ID of the employee you want to " +
+                                                "remove:");
                                         manager.removeEmployee(uuid, employees);
                                     }
                                     default -> {
@@ -287,16 +289,19 @@ public class DartController {
 
                                 employee.printAllAlbums(products);
 
-                                int option3 = intInput("\nIf you would like to remove a game, press 1, or album, press 2.");
+                                int option3 = intInput("\nIf you would like to remove a game, press 1, or album, " +
+                                        "press 2.");
                                 switch (option3) {
                                     case 1 -> {
-                                        String uuid = stringInput("Please enter the ID of the product you want to remove");
+                                        String uuid = stringInput("Please enter the ID of the product you want to " +
+                                                "remove");
                                         employee.removeGame(uuid, products);
                                         renderSuccess("Game removed!");
 
                                     }
                                     case 2 -> {
-                                        String uuid = stringInput("Please enter the ID of the album you want to remove");
+                                        String uuid = stringInput("Please enter the ID of the album you want to" +
+                                                " remove");
                                         employee.removeAlbum(uuid, products);
                                         renderSuccess("Song Album removed!");
 
@@ -309,15 +314,18 @@ public class DartController {
                             case 4 -> {
                                 // view customers
                                 employee.printAllCustomers(customers);
-                                int option2 = intInput("If you would like to remove an customer, press 1. Modify press 2. Or press 3 to return.");
+                                int option2 = intInput("If you would like to remove an customer, press 1. " +
+                                        "Modify press 2. Or press 3 to return.");
                                 switch (option2) {
                                     case 1 -> {
-                                        String uuid = stringInput("Please enter the ID of the customer you wat to remove");
+                                        String uuid = stringInput("Please enter the ID of the customer you want " +
+                                                "to remove");
                                         employee.removeCustomer(uuid, customers);
                                     }
                                     case 2 -> {
                                         String uuid = stringInput("Enter the ID of the customer you want to modify: ");
-                                        String modification = stringInput("What would you like to modify? Type an option:\n" +
+                                        String modification = stringInput("What would you like to modify? Type " +
+                                                "an option:\n" +
                                                 "NAME\n" +
                                                 "PASSWORD\n" +
                                                 "MEMBERSHIP\n");
@@ -353,7 +361,8 @@ public class DartController {
                                     case 2 -> {
                                         String uuid = stringInput("Enter the ID of the customer you want to upgrade: ");
                                         for (int i = 0; i < customers.size(); i++) {
-                                            if (customers.get(i).getUpgradeRequest() && customers.get(i).getId().toString().equals(uuid)) {
+                                            if (customers.get(i).getUpgradeRequest() && customers.get(i).getId().
+                                                    toString().equals(uuid)) {
                                                 customers.get(i).upgradeMembership();
                                             }
                                         }
@@ -395,9 +404,11 @@ public class DartController {
                     Customer c = null;
                     String password = null;
                     do {
-                        String loginUUID = stringInput("Please enter your login ID:"); // Looks through all IDs in the arraylist
+                        //Looks through all IDs in the arraylist
+                        String loginUUID = stringInput("Please enter your login ID:");
                         for (int i = 0; i < customers.size(); i++) {
-                            if (customers.get(i).getId().toString().equals(loginUUID)) { //Finds the ID matching the loginUUID input
+                            //Finds the ID matching the loginUUID input
+                            if (customers.get(i).getId().toString().equals(loginUUID)) {
 
                                 c = customers.get(i);
                             }
@@ -478,16 +489,20 @@ public class DartController {
                             }
                         }
                         case 3 -> {
-                            int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART Memberships!\n" +
+                            int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
+                                    " Memberships!\n" +
                                     "SILVER - 10% discount and rent up to 3 products.\n" +
-                                    "GOLD - 15% discount and rent up to 5 products. Returning a product gives you 2 credits.\n" +
-                                    "PLATINUM - 25% discount and rent up to 7 products. Returning a product gives you 3 credits.\n" +
+                                    "GOLD - 15% discount and rent up to 5 products. Returning a product gives you " +
+                                    "2 credits.\n" +
+                                    "PLATINUM - 25% discount and rent up to 7 products. Returning a product gives " +
+                                    "you 3 credits.\n" +
                                     "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
                             switch (option3) {
                                 case 1 -> {
                                     if (c.getMembership() != MembershipEnum.PLATINUM) {
                                         c.setUpgradeRequestTrue();
-                                        renderSuccess("Your membership will be upgraded to " + c.getNextMembership() + " as soon as an employee accepts it.");
+                                        renderSuccess("Your membership will be upgraded to " + c.getNextMembership() +
+                                                " as soon as an employee accepts it.");
                                     } else {
                                         render("Could not request an upgrade, your membership is already at maximum!");
                                     }
@@ -549,7 +564,8 @@ public class DartController {
                                     }
                                 }
                                 case 3 -> {
-                                    System.out.println("Hello there " + c.getName() + "! Here are your messages to delete:");
+                                    System.out.println("Hello there " + c.getName() + "! Here are your messages to " +
+                                            "delete:");
                                     for (UUID Id : c.getInboxIDs()) { // for each object in set of UUIDs
                                         System.out.println(Id);
                                     }

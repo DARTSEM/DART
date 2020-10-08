@@ -80,6 +80,10 @@ public class Product {
         return this.returnDate = LocalDate.now();
     }
 
+    public void rentedProduct() { this.available = false; }
+
+    public void returnedProduct() { this.available = true; }
+
     public String printAvailable() {
         String availablePrint;
         if (available = true) {

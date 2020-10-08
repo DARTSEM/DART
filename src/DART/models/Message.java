@@ -1,4 +1,5 @@
 package DART.models;
+
 import java.util.UUID;
 
 public class Message {
@@ -7,22 +8,32 @@ public class Message {
     private String content;
     private String title;
 
-    public Message (UUID senderID, String content, String title){
+    public Message(UUID senderID, String content, String title) {
         this.senderID = senderID;
         this.status = false;
         this.content = content;
         this.title = title;
     }
 
-    public UUID getSenderID() { return senderID; }
+    public UUID getSenderID() {
+        return senderID;
+    }
 
-    public boolean getStatus() { return status; }
+    public boolean getStatus() {
+        return status;
+    }
 
-    public String getContent() { return content; }
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
-    public void setStatus(boolean status) { this.status = status; }
+    public String getContent() {
+        return content;
+    }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
     @Override
     public String toString() {

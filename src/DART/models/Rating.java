@@ -8,7 +8,7 @@ public class Rating {
     private Integer rating;
     private String writtenReview;
 
-    public Rating(UUID customerId, UUID productId, Integer rating, String writtenReview){
+    public Rating(UUID customerId, UUID productId, Integer rating, String writtenReview) {
         this.customerId = customerId;
         this.productId = productId; //SEARCH FOR PRODUCT ID
         this.rating = rating;

@@ -39,12 +39,24 @@ public class Product {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public double getDailyRentFee() {
         return dailyRentFee;
     }
 
+    public void setDailyRentFee(double dailyRentFee) {
+        this.dailyRentFee = dailyRentFee;
+    }
+
     public boolean getAvailable() {
         return this.available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public LocalDate getRentDate() {
@@ -58,6 +70,7 @@ public class Product {
     public ProductType getProductType() {
         return this.productType;
     }
+    // in controller, you do setAvailable(false) to set availability of product to false.
 
     public LocalDate setRentDate() {
         return this.rentDate = LocalDate.now();
@@ -65,19 +78,6 @@ public class Product {
 
     public LocalDate setReturnDate() {
         return this.returnDate = LocalDate.now();
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-    // in controller, you do setAvailable(false) to set availability of product to false.
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDailyRentFee(double dailyRentFee) {
-        this.dailyRentFee = dailyRentFee;
     }
 
     public String printAvailable() {

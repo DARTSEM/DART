@@ -2,8 +2,6 @@ package DART.models.products;
 
 import DART.enums.ProductType;
 
-import java.util.UUID;
-
 public class Game extends Product {
     private String genre;
 
@@ -23,7 +21,7 @@ public class Game extends Product {
     @Override
     public String toString() {
         return getId() + " : '" + getTitle() + "'. Genre: " + getGenre() + ". Price: " + getDailyRentFee() +
-                " SEK/day. - " + printAvailable() ;
+                " SEK/day. - " + printAvailable();
     }
 }
 

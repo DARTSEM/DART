@@ -33,7 +33,10 @@ public class Customer {
 
     }
 
-    public ArrayList<Message> getUserInbox(UUID Id) { return inbox.get(Id); } // fetches user inbox based off ID
+    // Messaging stuff
+    public ArrayList<Message> getUserInbox(UUID Id) {
+        return inbox.get(Id);
+    } // fetches user inbox based off ID
 
     public void addMessage(Message message) {
 
@@ -46,12 +49,12 @@ public class Customer {
 
     }
 
-    public boolean removeMessage(int msgIndex, UUID senderID){
+    public boolean removeMessage(int msgIndex, UUID senderID) {
         ArrayList<Message> messages = inbox.get(senderID);
         if (messages == null) {
             return false;
         }
-        if (msgIndex < 0 || msgIndex >= messages.size()){
+        if (msgIndex < 0 || msgIndex >= messages.size()) {
             return false;
 
         }
@@ -63,7 +66,9 @@ public class Customer {
 
     }
 
-    public Set<UUID> getInboxIDs() { return inbox.keySet(); } // returns all the
+    public Set<UUID> getInboxIDs() {
+        return inbox.keySet();
+    } // returns all the
 
     public UUID getId() {
         return Id;
@@ -108,16 +113,22 @@ public class Customer {
         this.upgradeRequest = false;
     }
 
+    // Membership stuff
     public void upgradeMembership() {
+    this.membership = getNextMembership();
+    }
+
+
+    public MembershipEnum getNextMembership() {
 
         if (getMembership() == MembershipEnum.BASIC) {
-            this.membership = MembershipEnum.SILVER;
+            return MembershipEnum.SILVER;
         } else if (getMembership() == MembershipEnum.SILVER) {
-            this.membership = MembershipEnum.GOLD;
+            return MembershipEnum.GOLD;
         } else if (getMembership() == MembershipEnum.GOLD) {
-            this.membership = MembershipEnum.PLATINUM;
-        } else System.out.println("Something went wrong");
-
+            return MembershipEnum.PLATINUM;
+        } else System.out.println("Could not find next membership level.");
+        return null;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package DART;
 
-import DART.enums.*;
+import DART.enums.MembershipEnum;
+import DART.enums.ProductType;
 import DART.miscellaneous.Utilities;
 import DART.models.Customer;
 import DART.models.Employee;
@@ -88,19 +89,6 @@ public class DartController {
         System.out.println(message);
     }
 
-    public UUID readUUID() {
-        String input = Utilities.stringInput();
-        UUID retVal = null; //initialize as null otherwise compiler doesn't know what to do with it/ have to give it
-        //initial value
-        try {
-            retVal = UUID.fromString(input); //converts UUID from a string
-            return retVal;
-        } catch (IllegalArgumentException e) {
-            return retVal;
-        }
-    }
-
-
     public static void mainMenuPrint() {
         System.out.println(Utilities.line() + "Main Menu:\n" +
                 "Welcome to DART, your good old game rental system. The competition has no steam to keep up!\n" +
@@ -130,7 +118,6 @@ public class DartController {
                 "7. Return to Main Menu\n");
     }
 
-
     public static void customerMenuPrint() {
         System.out.println(Utilities.line() + "Customer Screen - Type one of the options below:\n" +
                 "1. Rent a game\n" +
@@ -148,9 +135,7 @@ public class DartController {
                 "4. Return to Customer Menu\n");
     }
 
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println("Initializing DART . . .\n");
         exampleProducts();
         exampleEmployees();
@@ -439,7 +424,7 @@ public class DartController {
                             for (int i = 0; i < products.size(); i++) {
                                 Product currentProduct = products.get(i);
                                 if (currentProduct.getId().toString().equals(uuid)) {
-                                        game = (Game) products.get(i);
+                                    game = (Game) products.get(i);
                                 }
                             }
                             if (game == null) {
@@ -476,9 +461,14 @@ public class DartController {
                                     "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
                             switch (option3) {
                                 case 1 -> {
-                                    c.setUpgradeRequestTrue();
-                                    renderSuccess("Your membership will be upgraded to the next level as soon as an employee accepts it.");
-                                    mainMethod(); //c.getNextMembership method?
+                                    // PLATINUM SHOULD NOT BE ABLE TO UPGRADE!!
+                                    if (c.getMembership() != MembershipEnum.PLATINUM) {
+                                        c.setUpgradeRequestTrue();
+                                        renderSuccess("Your membership will be upgraded to " + c.getNextMembership() + " as soon as an employee accepts it.");
+                                    } else {
+                                        render("Could not request an upgrade, your membership is already at maximum!");
+                                    }
+                                    mainMethod();
                                 }
                                 case 2 -> {
                                     renderExit("Returning to previous menu.");
@@ -493,15 +483,15 @@ public class DartController {
                         case 4 -> {
                             customerMessagesPrint();
                             int option4 = intInput("");
-                            switch(option4) {
+                            switch (option4) {
                                 case 1 -> {
                                     UUID recipientID = UUID.fromString
-                                                        (stringInput("Enter recipient ID of this message:"));
+                                            (stringInput("Enter recipient ID of this message:"));
 
                                     String title = stringInput("Give a title to the message: ");
                                     String content = stringInput("Write your message: ");
                                     Message message = new Message(c.getId(), content, title);
-                                    for (Customer customerMsgVar : customers){
+                                    for (Customer customerMsgVar : customers) {
                                         if (customerMsgVar.getId().equals(recipientID)) {
                                             customerMsgVar.addMessage(message);
                                             System.out.println(title + " has been saved!");
@@ -531,7 +521,7 @@ public class DartController {
                                             }
 
                                         }
-                                    } catch (Exception e){
+                                    } catch (Exception e) {
                                         System.out.println("Could not find the right inbox! Please try again.");
                                     }
                                 }
@@ -563,7 +553,7 @@ public class DartController {
                                             }
 
                                         }
-                                    } catch (Exception e){
+                                    } catch (Exception e) {
                                         System.out.println("UUID does not exist! Try again.");
                                     }
 
@@ -593,5 +583,17 @@ public class DartController {
                 }
             }
         } while (value != "X");
+    }
+
+    public UUID readUUID() {
+        String input = Utilities.stringInput();
+        UUID retVal = null; //initialize as null otherwise compiler doesn't know what to do with it/ have to give it
+        //initial value
+        try {
+            retVal = UUID.fromString(input); //converts UUID from a string
+            return retVal;
+        } catch (IllegalArgumentException e) {
+            return retVal;
+        }
     }
 }

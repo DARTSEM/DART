@@ -3,7 +3,6 @@ package DART.models;
 // identify all the classes you need, all the models, you need a CUSTOMER to store customers 
 // what is a customer and an employee in the system
 
-import DART.enums.ProductType;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
@@ -100,7 +99,7 @@ public class Employee {
     public void printAllProducts(List<Product> products) {
         for (int i = 0; i < products.size(); i++) {
             Product currentProduct = products.get(i);
-                System.out.println(currentProduct);
+            System.out.println(currentProduct);
         }
     }
 
@@ -145,6 +144,7 @@ public class Employee {
         }
         System.out.println("Album with entered ID not found");
     }
+
     public void printAllAlbums(List<Product> products) {
         for (int i = 0; i < products.size(); i++) {
             Product currentProduct = products.get(i);

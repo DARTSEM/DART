@@ -1,6 +1,6 @@
 package DART.enums;
 
-//meow
+//MEOWWWWWWW
 
 public enum MembershipEnum {
     BASIC("BASIC"),

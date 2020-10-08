@@ -210,7 +210,7 @@ public class DartController {
                                 mainMethod();
                             }
                             default -> {
-                                renderError("Your input was the wrong.");
+                                renderError("Your input was wrong.");
                                 mainMethod();
                             }
 
@@ -385,7 +385,7 @@ public class DartController {
                                 mainMethod();
                             }
                             default -> {
-                                renderError("Your input was the wrong.");
+                                renderError("Your input was wrong.");
                             }
                         }
                     } while (ePassword.equals("password123"));
@@ -592,7 +592,7 @@ public class DartController {
                             mainMethod();
                         }
                         default -> {
-                            renderError("Your input was the wrong.");
+                            renderError("Your input was wrong.");
                         }
                     }
                 }
@@ -601,7 +601,7 @@ public class DartController {
 
                 }
                 default -> {
-                    renderError("Your input was the wrong.");
+                    renderError("Your input was wrong.");
                     mainMethod();
                 }
             }

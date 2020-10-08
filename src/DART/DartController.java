@@ -325,8 +325,14 @@ public class DartController {
                                         employee.removeCustomer(uuid, customers);
                                     }
                                     case 2 -> {
+                                        String uuid = stringInput("Enter the ID of the customer you want to modify: ");
+                                        String modification = stringInput("What would you like to modify? Type an option:\n" +
+                                                "NAME\n" +
+                                                "PASSWORD\n" +
+                                                "MEMBERSHIP\n");
 
-
+                                        modification = modification.toLowerCase();
+                                        employee.modifyCustomer(uuid, customers, modification);
                                     }
                                     default -> {
 

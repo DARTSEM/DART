@@ -135,6 +135,12 @@ public class DartController {
                 "4. Return to Customer Menu\n");
     }
 
+    // Membership related:
+    public double getDailyRentFeeDiscounted(Product p, Customer c) {
+        return p.getDailyRentFee() * c.getDiscount();
+    }
+
+
     public static void main(String[] args) {
         System.out.println("Initializing DART . . .\n");
         exampleProducts();
@@ -385,7 +391,7 @@ public class DartController {
                     } while (ePassword.equals("password123"));
                 }
                 case "C" -> {
-
+                    Employee employee = new Employee();
                     Customer c = null;
                     String password = null;
                     do {
@@ -419,26 +425,44 @@ public class DartController {
                     int option = intInput("");
                     switch (option) {
                         case 1 -> {
-                            Game game = null;
+                            System.out.println("===GAMES===");
+
+                            employee.printAllGames(products);
+
+                            System.out.println("===SONG ALBUMS===");
+
+                            employee.printAllAlbums(products);
+
+                            Game g = null;
                             String uuid = stringInput("Please enter the ID of the product you want to rent:");
                             for (int i = 0; i < products.size(); i++) {
                                 Product currentProduct = products.get(i);
                                 if (currentProduct.getId().toString().equals(uuid)) {
-                                    game = (Game) products.get(i);
+                                    g = (Game) products.get(i);
+
                                 }
                             }
-                            if (game == null) {
+                            if (g == null) {
                                 System.out.println("Could not find the ID!");
-                                mainMethod(); // temporary solution
+                                // getDailyRentFeeDiscounted(g, c);
+                                mainMethod(); // temporary solution, need to fix the while loop
                             } else {
-                                customer.rentProduct(game);
+                                customer.rentProduct(g);
                                 renderSuccess("Rented a game!");
                             }
                         }
 
                         case 2 -> {
+                            System.out.println("===GAMES===");
+
+                            employee.printAllGames(products);
+
+                            System.out.println("===SONG ALBUMS===");
+
+                            employee.printAllAlbums(products);
+
                             Game game = null;
-                            String uuid = stringInput("Please enter the ID of the game you want to rent:");
+                            String uuid = stringInput("Please enter the ID of the game you want to return:");
                             for (int i = 0; i < products.size(); i++) {
                                 Product currentProduct = products.get(i);
                                 if (currentProduct.getId().toString().equals(uuid)) {
@@ -461,7 +485,6 @@ public class DartController {
                                     "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
                             switch (option3) {
                                 case 1 -> {
-                                    // PLATINUM SHOULD NOT BE ABLE TO UPGRADE!!
                                     if (c.getMembership() != MembershipEnum.PLATINUM) {
                                         c.setUpgradeRequestTrue();
                                         renderSuccess("Your membership will be upgraded to " + c.getNextMembership() + " as soon as an employee accepts it.");

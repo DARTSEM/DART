@@ -17,6 +17,9 @@ public class Customer {
     private MembershipEnum membership;
     private boolean upgradeRequest;
     private HashMap<UUID, ArrayList<Message>> inbox;
+    private double discount;
+    private int maxRent;
+    private int credits;
 
     public Customer(String name, String password, MembershipEnum membership) {
         Id = UUID.randomUUID(); // we don't need user input to make an ID, therefore it's not a parameter in constructor
@@ -25,6 +28,9 @@ public class Customer {
         this.membership = membership;
         this.upgradeRequest = false;
         this.inbox = new HashMap<UUID, ArrayList<Message>>(); // we have an ArrayList of messages for each customer ID
+        this.discount = 1.00; // 0% discount!
+        this.maxRent = 1;
+        this.credits = 0;
 
 
     }
@@ -90,6 +96,18 @@ public class Customer {
         return upgradeRequest;
     }
 
+    public double getDiscount() {
+        return discount;
+    }
+
+    public double getMaxRent() {
+        return maxRent;
+    }
+
+    public double getCredits() {
+        return credits;
+    }
+
     public void setName() {
         this.name = Utilities.stringInput();
     }
@@ -105,6 +123,27 @@ public class Customer {
 
     }
 
+
+    public void setMembershipValues() {
+        if (getMembership() == MembershipEnum.BASIC) {
+            this.discount = 1.00;
+            this.credits = 0;
+            this.maxRent = 1;
+        } else if (getMembership() == MembershipEnum.SILVER) {
+            this.discount = 0.90;
+            this.maxRent = 3;
+            this.credits = 0;
+        } else if (getMembership() == MembershipEnum.GOLD) {
+            this.discount = 0.85;
+            this.maxRent = 5;
+            this.credits = 2;
+        } else if (getMembership() == MembershipEnum.PLATINUM) {
+            this.discount = 0.75;
+            this.maxRent = 7;
+            this.credits = 3;
+        }
+    }
+
     public void setUpgradeRequestTrue() {
         this.upgradeRequest = true;
     }
@@ -116,6 +155,7 @@ public class Customer {
     // Membership stuff
     public void upgradeMembership() {
     this.membership = getNextMembership();
+    setMembershipValues();
     }
 
 

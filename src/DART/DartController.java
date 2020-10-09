@@ -17,7 +17,7 @@ public class DartController {
     public static ArrayList<Customer> customers = new ArrayList<Customer>();
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
-    public ArrayList<Rental> rentals = new ArrayList<Rental>();
+    // public ArrayList<Rental> rentals = new ArrayList<Rental>();
 
     public DartController() {
 
@@ -37,12 +37,12 @@ public class DartController {
 
     public static void exampleProducts() {
         Employee employee = new Employee();
-        Album dudebro = new Album("Mongolian Thicc Throat Remastered", "Altansukh", 2000,
-                123);
+        Album dudebro = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
+                200);
         employee.addAlbum(dudebro, products);
         Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3);
         Game example2Game = new Game("Groundrim", "Adventure", 100.0);
-        Game example3Game = new Game("Not Portal 2", "Puzzle", 122.3);
+        Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0);
         employee.addGame(exampleGame, products);
         employee.addGame(example2Game, products);
         employee.addGame(example3Game, products);
@@ -402,7 +402,7 @@ public class DartController {
                 case "C" -> {
                     Employee employee = new Employee();
                     Customer c = null;
-                    String password = null;
+                    String cPassword = null;
                     do {
                         //Looks through all IDs in the arraylist
                         String loginUUID = stringInput("Please enter your login ID:");
@@ -418,199 +418,216 @@ public class DartController {
                             mainMethod();
                         } else {
                             renderSuccess("Attempting to log in as " + c.getName());
-                            password = stringInput("Please enter your password:");
+                            cPassword = stringInput("Please enter your password:");
                         }
                     } while (c == null);
 
                     do {
-                        if (password.equals(c.getPassword())) {
+                        if (cPassword.equals(c.getPassword())) {
                             renderSuccess("Successfully logged in.");
+                        } else if (cPassword.equals("3")) {
+                            mainMethod();
                         } else {
                             System.out.println("Wrong password!");
-                        }
-                    } while (!password.equals(c.getPassword()));
-
-                    Customer customer = new Customer();
-                    customerMenuPrint();
-
-                    int option = intInput("");
-                    switch (option) {
-                        case 1 -> {
-                            System.out.println("===GAMES===");
-
-                            employee.printAllGames(products);
-
-                            System.out.println("===SONG ALBUMS===");
-
-                            employee.printAllAlbums(products);
-
-                            Game g = null;
-                            String uuid = stringInput("Please enter the ID of the product you want to rent:");
-                            for (int i = 0; i < products.size(); i++) {
-                                Product currentProduct = products.get(i);
-                                if (currentProduct.getId().toString().equals(uuid)) {
-                                    g = (Game) products.get(i);
-
-                                }
-                            }
-                            if (g == null) {
-                                System.out.println("Could not find the ID!");
-                                // getDailyRentFeeDiscounted(g, c);
-                                mainMethod(); // temporary solution, need to fix the while loop
-                            } else {
-                                customer.rentProduct(g);
-                                renderSuccess("Rented a game!");
-                            }
-                        }
-
-                        case 2 -> {
-                            System.out.println("===GAMES===");
-
-                            employee.printAllGames(products);
-
-                            System.out.println("===SONG ALBUMS===");
-
-                            employee.printAllAlbums(products);
-
-                            Game game = null;
-                            String uuid = stringInput("Please enter the ID of the game you want to return:");
-                            for (int i = 0; i < products.size(); i++) {
-                                Product currentProduct = products.get(i);
-                                if (currentProduct.getId().toString().equals(uuid)) {
-                                    if (products.get(i).getProductType() == ProductType.ALBUM)
-                                        game = (Game) products.get(i);
-                                }
-                            }
-                            if (game == null) {
-                                System.out.println("Could not find the ID!");
-                            } else {
-                                customer.returnGame(game);
-                                renderSuccess("Rented a game!");
-                            }
-                        }
-                        case 3 -> {
-                            int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
-                                    " Memberships!\n" +
-                                    "SILVER - 10% discount and rent up to 3 products.\n" +
-                                    "GOLD - 15% discount and rent up to 5 products. Returning a product gives you " +
-                                    "2 credits.\n" +
-                                    "PLATINUM - 25% discount and rent up to 7 products. Returning a product gives " +
-                                    "you 3 credits.\n" +
-                                    "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
-                            switch (option3) {
-                                case 1 -> {
-                                    if (c.getMembership() != MembershipEnum.PLATINUM) {
-                                        c.setUpgradeRequestTrue();
-                                        renderSuccess("Your membership will be upgraded to " + c.getNextMembership() +
-                                                " as soon as an employee accepts it.");
-                                    } else {
-                                        render("Could not request an upgrade, your membership is already at maximum!");
-                                    }
-                                    mainMethod();
-                                }
-                                case 2 -> {
-                                    renderExit("Returning to previous menu.");
-                                    mainMethod();
-
-                                }
-                                default -> {
-
-                                }
-                            }
-                        }
-                        case 4 -> {
-                            customerMessagesPrint();
-                            int option4 = intInput("");
-                            switch (option4) {
-                                case 1 -> {
-                                    UUID recipientID = UUID.fromString
-                                            (stringInput("Enter recipient ID of this message:"));
-
-                                    String title = stringInput("Give a title to the message: ");
-                                    String content = stringInput("Write your message: ");
-                                    Message message = new Message(c.getId(), content, title);
-                                    for (Customer customerMsgVar : customers) {
-                                        if (customerMsgVar.getId().equals(recipientID)) {
-                                            customerMsgVar.addMessage(message);
-                                            System.out.println(title + " has been saved!");
-                                            break;
-
-                                        }
-
-                                    }
-
-
-                                }
-
-                                case 2 -> {
-                                    System.out.println("Hello there " + c.getName() + "! Here are your messages:");
-                                    for (UUID Id : c.getInboxIDs()) { // for each object in set of UUIDs
-                                        System.out.println(Id);
-                                    }
-                                    String input = stringInput("Which inbox would you like to view?");
-                                    try {
-                                        ArrayList<Message> messages = c.getUserInbox(UUID.fromString(input));
-                                        if (messages != null) {
-                                            System.out.println();
-                                            for (Message message : messages) {
-                                                System.out.println(message);
-                                                System.out.println();
-                                                // adds formatting
-                                            }
-
-                                        }
-                                    } catch (Exception e) {
-                                        System.out.println("Could not find the right inbox! Please try again.");
-                                    }
-                                }
-                                case 3 -> {
-                                    System.out.println("Hello there " + c.getName() + "! Here are your messages to " +
-                                            "delete:");
-                                    for (UUID Id : c.getInboxIDs()) { // for each object in set of UUIDs
-                                        System.out.println(Id);
-                                    }
-                                    String input = stringInput("Which inbox would you like to delete in?");
-                                    try {
-                                        UUID Id = UUID.fromString(input);
-                                        ArrayList<Message> messages = c.getUserInbox(Id);
-                                        if (messages != null) {
-                                            System.out.println();
-                                            int removeIndex = 0;
-                                            for (Message message : messages) {
-                                                System.out.println(removeIndex);
-                                                System.out.println(message);
-                                                System.out.println();
-                                                removeIndex++;
-                                            }
-                                            removeIndex = intInput("Which message would you like to remove?");
-                                            if (c.removeMessage(removeIndex, Id)) {
-                                                System.out.println("Successfully removed: " + removeIndex);
-
-                                            } else {
-                                                System.out.println("Failed to remove: " + removeIndex +
-                                                        ". Please try again.");
-                                            }
-
-                                        }
-                                    } catch (Exception e) {
-                                        System.out.println("UUID does not exist! Try again.");
-                                    }
-
-
-                                }
-                                case 4 -> {
-
-                                }
-                            }
-                        }
-
-                        case 5 -> {
                             mainMethod();
                         }
-                        default -> {
-                            renderError("Your input was wrong.");
+                    } while (!cPassword.equals(c.getPassword()));
+
+                    do {
+                        customerMenuPrint();
+                        c.setMembershipValues();
+                        int option = intInput("");
+                        switch (option) {
+                            case 1 -> {
+                                System.out.println("===GAMES===");
+
+                                employee.printAllGames(products);
+
+                                System.out.println("===SONG ALBUMS===");
+
+                                employee.printAllAlbums(products);
+
+                                if (c.getAmountRent() < c.getMaxRent()) {
+                                    if (c.getMembership() == MembershipEnum.GOLD || c.getMembership() == MembershipEnum.PLATINUM) {
+                                        render("\nYou currently have " + c.getCreditsAmount() + " credits to spend.\n" +
+                                                "For 5 credits you can rent a product for free!\n" +
+                                                "You will receive " + c.getCreditsReceived() + " credits per item rented!");
+                                        if (c.getCreditsAmount() >= 5) {
+                                            int optionCredits = intInput("Would you like to use your credits? 1 for Yes, 2 for No.");
+                                            if (optionCredits == 1) {
+                                                c.resetCreditsAmount();
+                                            }
+                                        }
+                                    }
+                                    Product p = null;
+                                    String uuid = stringInput("Please enter the ID of the product you want to rent:");
+                                    for (int i = 0; i < products.size(); i++) {
+                                        Product currentProduct = products.get(i);
+                                        if (currentProduct instanceof Game) {
+                                            p = (Game) products.get(i);
+
+                                        }
+                                    }
+
+                                    if (p == null) {
+                                        System.out.println("Could not find the ID!");
+                                        // getDailyRentFeeDiscounted(g, c);
+                                        mainMethod(); // temporary solution, need to fix the while loop
+                                    } else {
+                                        c.rentProduct(p);
+                                        renderSuccess("Rented a game!");
+                                    }
+                                } else {
+                                    render("You are only allowed to rent " + c.getMaxRent() + " product(s)!");
+                                }
+                            }
+
+                            case 2 -> {
+                                System.out.println("===GAMES===");
+
+                                employee.printAllGames(products);
+
+                                System.out.println("===SONG ALBUMS===");
+
+                                employee.printAllAlbums(products);
+
+                                Game game = null;
+                                String uuid = stringInput("Please enter the ID of the game you want to return:");
+                                for (int i = 0; i < products.size(); i++) {
+                                    Product currentProduct = products.get(i);
+                                    if (currentProduct.getId().toString().equals(uuid)) {
+                                        if (products.get(i).getProductType() == ProductType.ALBUM)
+                                            game = (Game) products.get(i);
+                                    }
+                                }
+                                if (game == null) {
+                                    System.out.println("Could not find the ID!");
+                                } else {
+                                    c.returnGame(game);
+                                    renderSuccess("Rented a game!");
+                                }
+                            }
+                            case 3 -> {
+                                int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
+                                        " Memberships!\n" +
+                                        "SILVER - 10% discount and rent up to 3 products.\n" +
+                                        "GOLD - 15% discount and rent up to 5 products. Returning a product gives you " +
+                                        "2 credits.\n" +
+                                        "PLATINUM - 25% discount and rent up to 7 products. Returning a product gives " +
+                                        "you 3 credits.\n" +
+                                        "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
+                                switch (option3) {
+                                    case 1 -> {
+                                        if (c.getMembership() != MembershipEnum.PLATINUM) {
+                                            c.setUpgradeRequestTrue();
+                                            renderSuccess("Your membership will be upgraded to " + c.getNextMembership() +
+                                                    " as soon as an employee accepts it.");
+                                        } else {
+                                            render("Could not request an upgrade, your membership is already at maximum!");
+                                        }
+                                    }
+                                    case 2 -> {
+                                        renderExit("Returning to previous menu.");
+                                    }
+                                    default -> {
+
+                                    }
+                                }
+                            }
+                            case 4 -> {
+                                customerMessagesPrint();
+                                int option4 = intInput("");
+                                switch (option4) {
+                                    case 1 -> {
+                                        UUID recipientID = UUID.fromString
+                                                (stringInput("Enter recipient ID of this message:"));
+
+                                        String title = stringInput("Give a title to the message: ");
+                                        String content = stringInput("Write your message: ");
+                                        Message message = new Message(c.getId(), content, title);
+                                        for (Customer customerMsgVar : customers) {
+                                            if (customerMsgVar.getId().equals(recipientID)) {
+                                                customerMsgVar.addMessage(message);
+                                                System.out.println(title + " has been saved!");
+                                                break;
+
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                    case 2 -> {
+                                        System.out.println("Hello there " + c.getName() + "! Here are your messages:");
+                                        for (UUID Id : c.getInboxIDs()) { // for each object in set of UUIDs
+                                            System.out.println(Id);
+                                        }
+                                        String input = stringInput("Which inbox would you like to view?");
+                                        try {
+                                            ArrayList<Message> messages = c.getUserInbox(UUID.fromString(input));
+                                            if (messages != null) {
+                                                System.out.println();
+                                                for (Message message : messages) {
+                                                    System.out.println(message);
+                                                    System.out.println();
+                                                    // adds formatting
+                                                }
+
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println("Could not find the right inbox! Please try again.");
+                                        }
+                                    }
+                                    case 3 -> {
+                                        System.out.println("Hello there " + c.getName() + "! Here are your messages to " +
+                                                "delete:");
+                                        for (UUID Id : c.getInboxIDs()) { // for each object in set of UUIDs
+                                            System.out.println(Id);
+                                        }
+                                        String input = stringInput("Which inbox would you like to delete in?");
+                                        try {
+                                            UUID Id = UUID.fromString(input);
+                                            ArrayList<Message> messages = c.getUserInbox(Id);
+                                            if (messages != null) {
+                                                System.out.println();
+                                                int removeIndex = 0;
+                                                for (Message message : messages) {
+                                                    System.out.println(removeIndex);
+                                                    System.out.println(message);
+                                                    System.out.println();
+                                                    removeIndex++;
+                                                }
+                                                removeIndex = intInput("Which message would you like to remove?");
+                                                if (c.removeMessage(removeIndex, Id)) {
+                                                    System.out.println("Successfully removed: " + removeIndex);
+
+                                                } else {
+                                                    System.out.println("Failed to remove: " + removeIndex +
+                                                            ". Please try again.");
+                                                }
+
+                                            }
+                                        } catch (Exception e) {
+                                            System.out.println("UUID does not exist! Try again.");
+                                        }
+
+
+                                    }
+                                    case 4 -> {
+
+                                    }
+                                }
+                            }
+
+                            case 5 -> {
+                                mainMethod();
+                            }
+                            default -> {
+                                renderError("Your input was wrong.");
+                            }
                         }
-                    }
+                    } while (cPassword.equals(c.getPassword()) || c != null);
                 }
                 case "X" -> {
                     System.exit(0);

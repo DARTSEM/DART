@@ -4,6 +4,7 @@ import DART.enums.MembershipEnum;
 import DART.miscellaneous.Utilities;
 import DART.models.products.Album;
 import DART.models.products.Game;
+import DART.models.products.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +19,10 @@ public class Customer {
     private boolean upgradeRequest;
     private HashMap<UUID, ArrayList<Message>> inbox;
     private double discount;
+    private int amountRent;
     private int maxRent;
-    private int credits;
+    private int creditsReceived;
+    private int creditsAmount;
 
     public Customer(String name, String password, MembershipEnum membership) {
         Id = UUID.randomUUID(); // we don't need user input to make an ID, therefore it's not a parameter in constructor
@@ -29,8 +32,10 @@ public class Customer {
         this.upgradeRequest = false;
         this.inbox = new HashMap<UUID, ArrayList<Message>>(); // we have an ArrayList of messages for each customer ID
         this.discount = 1.00; // 0% discount!
+        this.amountRent = 0; // the amount of products the customer has rented. It increases when they rent!
         this.maxRent = 1;
-        this.credits = 0;
+        this.creditsReceived = 0;
+        this.creditsAmount = 0;
 
 
     }
@@ -100,12 +105,25 @@ public class Customer {
         return discount;
     }
 
+    public double getAmountRent() {
+        return amountRent;
+    }
+
     public double getMaxRent() {
         return maxRent;
     }
 
-    public double getCredits() {
-        return credits;
+    public int getCreditsReceived() {
+        return creditsReceived;
+    }
+
+    public int getCreditsAmount() {
+        return creditsAmount;
+    }
+
+
+    public void resetCreditsAmount() {
+        this.creditsAmount = 0;
     }
 
     public void setName() {
@@ -127,20 +145,20 @@ public class Customer {
     public void setMembershipValues() {
         if (getMembership() == MembershipEnum.BASIC) {
             this.discount = 1.00;
-            this.credits = 0;
+            this.creditsReceived = 0;
             this.maxRent = 1;
         } else if (getMembership() == MembershipEnum.SILVER) {
             this.discount = 0.90;
             this.maxRent = 3;
-            this.credits = 0;
+            this.creditsReceived = 0;
         } else if (getMembership() == MembershipEnum.GOLD) {
             this.discount = 0.85;
             this.maxRent = 5;
-            this.credits = 2;
+            this.creditsReceived = 2;
         } else if (getMembership() == MembershipEnum.PLATINUM) {
             this.discount = 0.75;
             this.maxRent = 7;
-            this.credits = 3;
+            this.creditsReceived = 3;
         }
     }
 
@@ -154,8 +172,8 @@ public class Customer {
 
     // Membership stuff
     public void upgradeMembership() {
-    this.membership = getNextMembership();
-    setMembershipValues();
+        this.membership = getNextMembership();
+        setMembershipValues();
     }
 
 
@@ -178,21 +196,28 @@ public class Customer {
 
     // What customers can do:
 
-    public void rentProduct(Game g) {
-        if (!g.getAvailable()) { // if its not available
+    public void rentProduct(Product p) {
+        if (!p.getAvailable()) { // if its not available
             System.out.println("It's not available!");
 
         } else {
-            g.setAvailable(false);
-            g.setRentDate();
+            this.amountRent = this.amountRent + 1;
+
+            if (getMembership() == MembershipEnum.GOLD) {
+                this.creditsAmount = this.creditsAmount + 2;
+            } else if (getMembership() == MembershipEnum.PLATINUM) {
+                this.creditsAmount = this.creditsAmount + 3;
+            }
+            p.setAvailable(false);
+            p.setRentDate();
         }
     }
-
     public void returnGame(Game g) {
         if (g.getAvailable()) { // if its not available
             System.out.println("This game is not rented!");
 
         } else {
+            this.amountRent = this.amountRent - 1;
             g.setAvailable(true);
             g.setReturnDate();
         }

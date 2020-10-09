@@ -1,4 +1,4 @@
-package DART.models;
+/* package DART.models;
 
 import DART.models.products.Product;
 
@@ -95,3 +95,4 @@ public class Rental {
 }
 
 
+*/

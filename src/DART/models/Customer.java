@@ -196,53 +196,6 @@ public class Customer {
 
     // What customers can do:
 
-    public void rentProduct(Product p) {
-        if (!p.getAvailable()) { // if its not available
-            System.out.println("It's not available!");
-
-        } else {
-            this.amountRent = this.amountRent + 1;
-
-            if (getMembership() == MembershipEnum.GOLD) {
-                this.creditsAmount = this.creditsAmount + 2;
-            } else if (getMembership() == MembershipEnum.PLATINUM) {
-                this.creditsAmount = this.creditsAmount + 3;
-            }
-            p.setAvailable(false);
-            p.setRentDate();
-        }
-    }
-    public void returnGame(Game g) {
-        if (g.getAvailable()) { // if its not available
-            System.out.println("This game is not rented!");
-
-        } else {
-            this.amountRent = this.amountRent - 1;
-            g.setAvailable(true);
-            g.setReturnDate();
-        }
-    }
-
-    public void rentAlbum(Album s) {
-        if (!s.getAvailable()) { // if its not available
-            System.out.println("It's not available!");
-
-        } else {
-            s.setAvailable(false);
-            s.setRentDate();
-        }
-    }
-
-    public void returnAlbum(Album s) {
-        if (s.getAvailable()) { // if its not available
-            System.out.println("This game is not rented!");
-
-        } else {
-            s.setAvailable(true);
-            s.setReturnDate();
-        }
-    }
-
     public void addAlbum(Album Album, ArrayList<Album> Albums) {
         Albums.add(Album);
     }

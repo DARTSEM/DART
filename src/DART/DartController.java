@@ -7,8 +7,11 @@ import DART.models.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
+import jdk.jfr.DataAmount;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +20,58 @@ public class DartController {
     public static ArrayList<Customer> customers = new ArrayList<Customer>();
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
-    // public ArrayList<Rental> rentals = new ArrayList<Rental>();
+    public static ArrayList<Rental> rentals = new ArrayList<Rental>();
+
+    public static void rentProduct(Customer customer, Product product, LocalDate rentDate) {
+        Rental rental = new Rental(customer, product, rentDate);
+
+        DartController.rentals.add(rental);
+    }
+
+    //update membership and credits, check if free w redeemable credits
+    //allow but not require rating and review, included in item
+    public static Double returnProduct(Rental rental, LocalDate returnDate) {
+        rental.returnRental(returnDate);
+        //returns total amount incurred
+        return rental.totalRentFee();
+    }
+
+    //modify to reflect changes in architecture
+    //returns all rentals associated with specific customer ID
+    public static Collection<Rental> getRentalsForCustomer(Customer customer) {
+        ArrayList<Rental> customerRentals = new ArrayList<>();
+        for (Rental rental : DartController.rentals) {
+            if (customer.getId().equals(rental.getCustomer().getId())) {
+                customerRentals.add(rental);
+            }
+        }
+        return customerRentals;
+    }
+
+    //modify to reflect changes in architecture
+    // calculates total profit for all rentals
+    public static Double getTotalProfit() {
+        Double totalProfit = 0.0;
+        for (Rental rental : DartController.rentals) {
+            totalProfit += rental.totalRentFee();
+        }
+        return totalProfit;
+    }
+
+    //pass in enumeration albums, games, all
+    //filters products by type
+    //modify to reflect changes in architecture
+    public static Collection<Product> getProductByType(ProductType productType) {
+        ArrayList<Product> filteredProducts = new ArrayList<>();
+        for (Product product: DartController.products) {
+            if (productType == null) {
+                filteredProducts.add(product);
+            } else if (productType == product.getProductType()) {
+                filteredProducts.add(product);
+            }
+        }
+        return filteredProducts;
+    }
 
     public DartController() {
 
@@ -134,11 +188,6 @@ public class DartController {
                 "2. View messages\n" +
                 "3. Delete messages\n" +
                 "4. Return to Customer Menu\n");
-    }
-
-    // Membership related:
-    public double getDailyRentFeeDiscounted(Product p, Customer c) {
-        return p.getDailyRentFee() * c.getDiscount();
     }
 
 
@@ -380,13 +429,9 @@ public class DartController {
                                 }
                             }
                             case 6 -> { // total rent profit
-                                Game game = null;
                                 double totalRentFee = 0;
-                                for (int i = 0; i < products.size(); i++) {
-                                    if (!products.get(i).getAvailable()) {
-                                        totalRentFee += products.get(i).totalRentFee();
-
-                                    }
+                                for (int i = 0; i < rentals.size(); i++) {
+                                    totalRentFee += rentals.get(i).totalRentFee();
                                 }
                                 System.out.println("The total rent fee is: " + totalRentFee);
                             }
@@ -461,11 +506,10 @@ public class DartController {
                                     }
                                     Product p = null;
                                     String uuid = stringInput("Please enter the ID of the product you want to rent:");
-                                    for (int i = 0; i < products.size(); i++) {
-                                        Product currentProduct = products.get(i);
-                                        if (currentProduct instanceof Game) {
-                                            p = (Game) products.get(i);
 
+                                    for (Product product: products) {
+                                        if(product.getId().equals(uuid)) {
+                                            p = product;
                                         }
                                     }
 
@@ -474,7 +518,7 @@ public class DartController {
                                         // getDailyRentFeeDiscounted(g, c);
                                         mainMethod(); // temporary solution, need to fix the while loop
                                     } else {
-                                        c.rentProduct(p);
+                                        rentProduct(c, p, LocalDate.now());
                                         renderSuccess("Rented a game!");
                                     }
                                 } else {
@@ -552,10 +596,7 @@ public class DartController {
                                                 break;
 
                                             }
-
                                         }
-
-
                                     }
 
                                     case 2 -> {

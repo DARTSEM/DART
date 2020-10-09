@@ -4,11 +4,17 @@ import DART.enums.MembershipEnum;
 import DART.miscellaneous.Utilities;
 import DART.models.products.Album;
 import DART.models.products.Game;
+import DART.models.products.Product;
+import DART.DartController;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+
+import static DART.DartController.products;
+//import static DART.models.Rating.getProductId;
 
 public class Customer {
     private UUID Id;
@@ -54,6 +60,16 @@ public class Customer {
         inbox.put(message.getSenderID(), messages);
 
     }
+
+
+// rating stuff
+   // public ArrayList<Rating> getProductRatings(Product products){
+  //      return ratingsHash.get(products);
+ //   }
+ //   public void addRating(Rating rating){
+   //     ArrayList<Rating> ratings = ratingsHash.get(products);
+  //      ratings.add(rating);
+   // }
 
     public boolean removeMessage(int msgIndex, UUID senderID) {
         ArrayList<Message> messages = inbox.get(senderID);

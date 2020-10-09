@@ -10,20 +10,28 @@ import DART.models.Message;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
+import DART.models.products.Rating;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import static DART.models.products.Rating.writtenReview;
+import static java.util.stream.Collectors.toList;
 
 public class DartController {
 
     public static ArrayList<Customer> customers = new ArrayList<Customer>();
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
+    public static HashMap<Product, Rating> ratingsHash;
+
 
     public DartController() {
 
     }
+
 
     public static void exampleCustomers() {
         Employee employee = new Employee();
@@ -41,11 +49,14 @@ public class DartController {
         Employee employee = new Employee();
         Album dudebro = new Album("Mongolian Thicc Throat Remastered", "Altansukh", 2000, 123);
         employee.addAlbum(dudebro, products);
-        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3);
-        Game example2Game = new Game("Groundrim", "Adventure", 100.0);
-        Game example3Game = new Game("Not Portal 2", "Puzzle", 122.3);
+
+        Game exampleGame = new Game("Abandoned 4 Demise 2", "Puzzle", 122.3);
         employee.addGame(exampleGame, products);
+
+        Game example2Game = new Game("Groundrim", "Adventure", 100.0);
         employee.addGame(example2Game, products);
+
+        Game example3Game = new Game("Not Portal 2", "Action", 122.3);
         employee.addGame(example3Game, products);
     }
 
@@ -466,15 +477,34 @@ public class DartController {
                             for (int i = 0; i < products.size(); i++) {
                                 Product currentProduct = products.get(i);
                                 if (currentProduct.getId().toString().equals(uuid)) {
-                                    if (products.get(i).getProductType() == ProductType.ALBUM)
+                                        if (products.get(i).getProductType() == ProductType.ALBUM)
                                         game = (Game) products.get(i);
                                 }
                             }
                             if (game == null) {
                                 System.out.println("Could not find the ID!");
                             } else {
+                                int input;
                                 customer.returnGame(game);
-                                renderSuccess("Rented a game!");
+                                System.out.println("Leave a numerical rating between 1 and 5.");
+                                Integer productRate = Utilities.intInput();
+                                System.out.println("Would you like to leave a written rating?\n1. Yes\n2. No");
+                                input = Utilities.intInput();
+                                if(input == 1){
+                                    //leave written review!
+                                    writtenReview = Utilities.stringInput();
+                                } else if (input == 2){
+                                    // dont leave written review!
+                                    // written review = "No written review."
+                                    writtenReview = "No written review";
+                                } else {
+                                    System.out.println("Wrong input! Cancelling written review.");
+                                    writtenReview = "No written review";
+                                }
+                                Rating r = new Rating(productRate, writtenReview);
+                                ratingsHash.put(game, r);
+                                System.out.println("Review left!");
+                                mainMethod();
                             }
                         }
                         case 3 -> {
@@ -589,7 +619,18 @@ public class DartController {
                         }
 
                         case 5 -> {
-                            mainMethod();
+                            System.out.println("Please input the genre you want to look for.");
+                            String search = Utilities.stringInput();
+                            for (Product product : products) {
+                                Game game = (product instanceof Game ? (Game) product : null);
+                                if(game == null){
+                                    continue;
+                                }
+                                if (game.getGenre().equals(search))
+                                    System.out.println(game);
+
+                                mainMethod();
+                            }
                         }
                         default -> {
                             renderError("Your input was the wrong.");

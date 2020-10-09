@@ -4,6 +4,7 @@ import DART.enums.ProductType;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Product {
@@ -15,6 +16,8 @@ public class Product {
     protected LocalDate returnDate;
     protected ProductType productType;
     protected int productRating;
+    private ArrayList<Rating> rating;
+
 
     public Product(String title, double dailyRentFee, ProductType productType) {
 
@@ -24,6 +27,8 @@ public class Product {
         this.available = true;
         this.rentDate = LocalDate.now();
         this.productType = productType;
+        this.rating = new ArrayList<Rating>();
+
 
     }
 
@@ -31,9 +36,20 @@ public class Product {
         return Id;
     }
 
+    public double getAverageRating(){
+        int sum = 0;
+        for (int i = 0; i < rating.size(); i++){
+            sum += rating.get(i).getRating();
+        }
+        double averageRating = sum / (double)rating.size();
+        return averageRating;
+    }
+
     public int getProductRating() {
         return productRating;
     }
+
+
 
     public String getTitle() {
         return title;
@@ -80,15 +96,15 @@ public class Product {
         return this.returnDate = LocalDate.now();
     }
 
-    public String printAvailable() {
-        String availablePrint;
-        if (available = true) {
-            availablePrint = "AVAILABLE";
-        } else {
-            availablePrint = "UNAVAILABLE";
-        }
-        return availablePrint;
-    }
+  public String printAvailable() {
+     String availablePrint;
+      if (available = true) {
+      availablePrint = "AVAILABLE";
+   } else {
+        availablePrint = "UNAVAILABLE";
+     }
+     return availablePrint;
+}
 
     public Double totalRentFee() {
         LocalDate endDate = returnDate == null ? LocalDate.now() : returnDate; //
@@ -97,6 +113,8 @@ public class Product {
         double fee = daysBetween * getDailyRentFee();
         return fee;
     }
+
+
 
 }
 

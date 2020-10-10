@@ -1,6 +1,7 @@
 package DART.models.products;
 
 import DART.enums.ProductType;
+import DART.models.Customer;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -16,12 +17,12 @@ public class Product {
     protected ProductType productType;
     protected int productRating;
 
-    public Product(String title, double dailyRentFee, ProductType productType) {
+    public Product(String title, double dailyRentFee, ProductType productType, boolean available) {
 
         this.Id = UUID.randomUUID();
         this.title = title;
         this.dailyRentFee = dailyRentFee;
-        this.available = true;
+        this.available = available;
         this.rentDate = LocalDate.now();
         this.productType = productType;
 
@@ -80,29 +81,24 @@ public class Product {
         return this.returnDate = LocalDate.now();
     }
 
-    public void rentedProduct() { this.available = false; }
+    public void rentedProduct() {
+        this.available = false;
+    }
 
-    public void returnedProduct() { this.available = true; }
+    public void returnedProduct() {
+        this.available = true;
+    }
 
     public String printAvailable() {
         String availablePrint;
-        if (available = true) {
+        if (available == true) {
             availablePrint = "AVAILABLE";
         } else {
             availablePrint = "UNAVAILABLE";
         }
         return availablePrint;
-    }
 
-    public Double totalRentFee() {
-        LocalDate endDate = returnDate == null ? LocalDate.now() : returnDate; //
-        long daysBetween = Period.between(rentDate, endDate).getDays() + 1; // Period counts days between x and y,
-        // with Days converting it to days (instead of e.g. seconds)
-        double fee = daysBetween * getDailyRentFee();
-        return fee;
-    }
 
+    }
 }
-
-
 

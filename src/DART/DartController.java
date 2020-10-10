@@ -7,8 +7,11 @@ import DART.models.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
+import jdk.jfr.DataAmount;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +20,59 @@ public class DartController {
     public static ArrayList<Customer> customers = new ArrayList<Customer>();
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
-    // public ArrayList<Rental> rentals = new ArrayList<Rental>();
+    public static ArrayList<Rental> rentals = new ArrayList<Rental>();
+
+    public static void rentProduct(Customer customer, Product product, LocalDate rentDate) {
+        product.setAvailable(false);
+        Rental rental = new Rental(customer, product, rentDate);
+
+        DartController.rentals.add(rental);
+    }
+
+    //update membership and credits, check if free w redeemable credits
+    //allow but not require rating and review, included in item
+    public static Double returnProduct(Rental rental, LocalDate returnDate) {
+        rental.returnRental(returnDate);
+        //returns total amount incurred
+        return rental.totalRentFee();
+    }
+
+    //modify to reflect changes in architecture
+    //returns all rentals associated with specific customer ID
+    public static Collection<Rental> getRentalsForCustomer(Customer customer) {
+        ArrayList<Rental> customerRentals = new ArrayList<>();
+        for (Rental rental : DartController.rentals) {
+            if (customer.getId().equals(rental.getCustomer().getId())) {
+                customerRentals.add(rental);
+            }
+        }
+        return customerRentals;
+    }
+
+    //modify to reflect changes in architecture
+    // calculates total profit for all rentals
+    public static Double getTotalProfit() {
+        Double totalProfit = 0.0;
+        for (Rental rental : DartController.rentals) {
+            totalProfit += rental.totalRentFee();
+        }
+        return totalProfit;
+    }
+
+    //pass in enumeration albums, games, all
+    //filters products by type
+    //modify to reflect changes in architecture
+    public static Collection<Product> getProductByType(ProductType productType) {
+        ArrayList<Product> filteredProducts = new ArrayList<>();
+        for (Product product: DartController.products) {
+            if (productType == null) {
+                filteredProducts.add(product);
+            } else if (productType == product.getProductType()) {
+                filteredProducts.add(product);
+            }
+        }
+        return filteredProducts;
+    }
 
     public DartController() {
 
@@ -38,11 +93,11 @@ public class DartController {
     public static void exampleProducts() {
         Employee employee = new Employee();
         Album dudebro = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
-                200);
+                200, true);
         employee.addAlbum(dudebro, products);
-        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3);
-        Game example2Game = new Game("Groundrim", "Adventure", 100.0);
-        Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0);
+        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3, true);
+        Game example2Game = new Game("Groundrim", "Adventure", 100.0, true);
+        Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0, true);
         employee.addGame(exampleGame, products);
         employee.addGame(example2Game, products);
         employee.addGame(example3Game, products);
@@ -136,11 +191,6 @@ public class DartController {
                 "4. Return to Customer Menu\n");
     }
 
-    // Membership related:
-    public double getDailyRentFeeDiscounted(Product p, Customer c) {
-        return p.getDailyRentFee() * c.getDiscount();
-    }
-
 
     public static void main(String[] args) {
         System.out.println("Initializing DART . . .\n");
@@ -209,6 +259,18 @@ public class DartController {
                                 }
                             }
                             case 3 -> {
+                                //rent history
+                            }
+                            case 4 -> {
+                                //most profitable item
+                            }
+                            case 5 -> {
+                                //rent frequency of all items
+                            }
+                            case 6 -> {
+                                //retrieve best customer
+                            }
+                            case 7 -> {
                                 mainMethod();
                             }
                             default -> {
@@ -247,7 +309,7 @@ public class DartController {
                                         String genre = stringInput("Enter the game's genre: ");
                                         double dailyRentFee = doubleInput("Enter the daily rent fee: ");
 
-                                        Game g = new Game(title, genre, dailyRentFee);
+                                        Game g = new Game(title, genre, dailyRentFee, true);
                                         employee.addGame(g, products);
                                         renderSuccess("Game created!");
                                     }
@@ -257,7 +319,7 @@ public class DartController {
                                         int releaseYear = intInput("Enter the album's release year: ");
                                         double dailyRentFee = doubleInput("Enter the daily rent fee: ");
 
-                                        Album s = new Album(title, artist, releaseYear, dailyRentFee);
+                                        Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
                                         employee.addAlbum(s, products);
                                         renderSuccess("Song Album created!");
                                     }
@@ -270,7 +332,7 @@ public class DartController {
                                 String name = stringInput("Enter the customer's full name: ");
                                 String password = stringInput("Enter the customer's password: ");
                                 String input = stringInput("Set customer's membership:");
-                                MembershipEnum membership = MembershipEnum.valueOf(input);
+                                MembershipEnum membership = MembershipEnum.BASIC;
 
 
                                 Customer c = new Customer(name, password, membership);
@@ -380,15 +442,7 @@ public class DartController {
                                 }
                             }
                             case 6 -> { // total rent profit
-                                Game game = null;
-                                double totalRentFee = 0;
-                                for (int i = 0; i < products.size(); i++) {
-                                    if (!products.get(i).getAvailable()) {
-                                        totalRentFee += products.get(i).totalRentFee();
-
-                                    }
-                                }
-                                System.out.println("The total rent fee is: " + totalRentFee);
+                                System.out.println("The total rent profit is: " + getTotalProfit());
                             }
                             case 7 -> {
                                 mainMethod();
@@ -459,23 +513,25 @@ public class DartController {
                                             }
                                         }
                                     }
+
                                     Product p = null;
                                     String uuid = stringInput("Please enter the ID of the product you want to rent:");
-                                    for (int i = 0; i < products.size(); i++) {
-                                        Product currentProduct = products.get(i);
-                                        if (currentProduct instanceof Game) {
-                                            p = (Game) products.get(i);
 
+
+                                    for (int i = 0; i < products.size(); i++) {
+                                        if (products.get(i).getId().toString().equals(uuid)) {
+
+                                            p = products.get(i);
                                         }
                                     }
 
                                     if (p == null) {
                                         System.out.println("Could not find the ID!");
-                                        // getDailyRentFeeDiscounted(g, c);
-                                        mainMethod(); // temporary solution, need to fix the while loop
+
                                     } else {
-                                        c.rentProduct(p);
-                                        renderSuccess("Rented a game!");
+                                        rentProduct(c, p, LocalDate.now());
+                                        renderSuccess("Rented " + p.getTitle() + "!");
+
                                     }
                                 } else {
                                     render("You are only allowed to rent " + c.getMaxRent() + " product(s)!");
@@ -491,21 +547,23 @@ public class DartController {
 
                                 employee.printAllAlbums(products);
 
-                                Game game = null;
+                                Rental returns = null;
                                 String uuid = stringInput("Please enter the ID of the game you want to return:");
-                                for (int i = 0; i < products.size(); i++) {
-                                    Product currentProduct = products.get(i);
-                                    if (currentProduct.getId().toString().equals(uuid)) {
-                                        if (products.get(i).getProductType() == ProductType.ALBUM)
-                                            game = (Game) products.get(i);
+
+                                for (Rental rental: rentals) {
+                                    if (rental.equals(uuid)) {
+                                        returns = rental;
                                     }
                                 }
-                                if (game == null) {
+
+                                if (returns == null) {
                                     System.out.println("Could not find the ID!");
+                                    mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
-                                    c.returnGame(game);
+                                    returns.returnRental(LocalDate.now());
                                     renderSuccess("Rented a game!");
                                 }
+
                             }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
@@ -552,10 +610,7 @@ public class DartController {
                                                 break;
 
                                             }
-
                                         }
-
-
                                     }
 
                                     case 2 -> {

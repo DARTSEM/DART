@@ -6,9 +6,9 @@ public class Album extends Product {
     private String artist;
     private int releaseYear;
 
-    public Album(String title, String artist, int releaseYear, double dailyRentFee) {
+    public Album(String title, String artist, int releaseYear, double dailyRentFee, boolean available) {
 
-        super(title, dailyRentFee, ProductType.ALBUM);
+        super(title, dailyRentFee, ProductType.ALBUM, available);
 
         this.artist = artist;
         this.releaseYear = releaseYear;

@@ -23,7 +23,6 @@ public class DartController {
 
 
     public static void rentProduct(Customer customer, Product product, LocalDate rentDate) {
-        product.setAvailable(false);
         Rental rental = new Rental(customer, product, rentDate);
 
         DartController.rentals.add(rental);
@@ -215,7 +214,7 @@ public class DartController {
                 case "M" -> {
                     String mPassword;
                     do {
-                        System.out.println("Please input your password, or 3 to go back to the main menu:");
+                        System.out.println("Please input your password, or press 3 to go back to the main menu:");
                         mPassword = Utilities.stringInput();
 
                         if (mPassword.equals("admin1234")) {
@@ -247,7 +246,7 @@ public class DartController {
                             }
                             case 2 -> {
                                 manager.printAllEmployees(employees);
-                                int option2 = intInput("If you would like to remove an employee, press 1.");
+                                int option2 = intInput("1. Remove an employee");
                                 switch (option2) {
                                     case 1 -> {
                                         String uuid = stringInput("Please enter the ID of the employee you want to " +
@@ -285,7 +284,7 @@ public class DartController {
                 case "E" -> {
                     String ePassword;
                     do {
-                        System.out.println("Please input your password, or 3 to go back to the main menu:");
+                        System.out.println("Please input your password, or press 3 to go back to the main menu:");
                         ePassword = Utilities.stringInput();
 
                         if (ePassword.equals("password123")) {
@@ -303,7 +302,8 @@ public class DartController {
                         int option = intInput("");
                         switch (option) {
                             case 1 -> {
-                                int option2 = intInput("For games, press 1, for Albums, press 2.");
+                                int option2 = intInput("1. Games\n" +
+                                        "2. Albums");
                                 switch (option2) {
                                     case 1 -> {
                                         String title = stringInput("Enter the game's title: ");
@@ -352,8 +352,8 @@ public class DartController {
 
                                 employee.printAllAlbums(products);
 
-                                int option3 = intInput("\nIf you would like to remove a game, press 1, or album, " +
-                                        "press 2.");
+                                int option3 = intInput("\n1. Remove Game\n" +
+                                        "2. Remove Album");
                                 switch (option3) {
                                     case 1 -> {
                                         String uuid = stringInput("Please enter the ID of the product you want to " +
@@ -377,8 +377,9 @@ public class DartController {
                             case 4 -> {
                                 // view customers
                                 employee.printAllCustomers(customers);
-                                int option2 = intInput("If you would like to remove an customer, press 1. " +
-                                        "Modify press 2. Or press 3 to return.");
+                                int option2 = intInput("1. Remove customer\n" +
+                                        "2. Modify customer details\n" +
+                                        "3. Return to previous menu");
                                 switch (option2) {
                                     case 1 -> {
                                         String uuid = stringInput("Please enter the ID of the customer you want " +
@@ -508,7 +509,9 @@ public class DartController {
                                                 "For 5 credits you can rent a product for free!\n" +
                                                 "You will receive " + c.getCreditsReceived() + " credits per item rented!");
                                         if (c.getCreditsAmount() >= 5) {
-                                            int optionCredits = intInput("Would you like to use your credits? 1 for Yes, 2 for No.");
+                                            int optionCredits = intInput("Would you like to use your credits?\n" +
+                                                    "1. Yes\n" +
+                                                    "2. No.");
                                             if (optionCredits == 1) {
                                                 c.resetCreditsAmount();
                                             }
@@ -541,22 +544,23 @@ public class DartController {
 
                             case 2 -> {
                                 System.out.println("===GAMES===");
-
                                 employee.printAllGames(products);
 
                                 System.out.println("===SONG ALBUMS===");
-
                                 employee.printAllAlbums(products);
 
                                 Rental returns = null;
                                 String uuid = stringInput("Please enter the ID of the game you want to return:");
 
                                 for (Rental rental: rentals) {
-                                    if (rental.equals(uuid)) {
+                                    if (uuid.equals(rental.getProduct().getId().toString())) {
                                         returns = rental;
                                     }
                                 }
+
+                                /*
                                 Game game = null;
+
                                 for (int i = 0; i < products.size(); i++) {
                                     Product currentProduct = products.get(i);
                                     if (currentProduct.getId().toString().equals(uuid)) {
@@ -564,15 +568,22 @@ public class DartController {
                                             game = (Game) products.get(i);
                                     }
                                 }
+                                */
+
                           if (returns == null) {
                                     System.out.println("Could not find the ID!");
                                     mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
                                     returns.returnRental(LocalDate.now());
+                                    System.out.println("Successfully returned a product!");
+
+                                    /*
                                     String writtenReview;
                                     System.out.println("Leave a numerical rating between 1 and 5.");
                                     Integer productRate = Utilities.intInput();
-                                    System.out.println("Would you like to leave a written rating?\n1. Yes\n2. No");
+                                    System.out.println("Would you like to leave a written review?\n" +
+                                            "1. Yes" +
+                                            "\n2. No");
                                     Integer input = Utilities.intInput();
                                     if (input == 1) {
                                         //leave written review!
@@ -584,12 +595,15 @@ public class DartController {
                                     } else {
                                         System.out.println("Wrong input! Cancelling written review.");
                                         writtenReview = "No written review";
+
+
                                     }
+
                                     DART.models.products.Rating r = new Rating(productRate, writtenReview);
                                     ratingsHash.put(game, r);
-                                    System.out.println("Review left!");
+                                    System.out.println("Successfully submitted your review!");
+                                    */
                                     mainMethod();
-
                                 }
 
                             }

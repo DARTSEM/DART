@@ -16,18 +16,18 @@ public class Rating {
     }
 
     public UUID getCustomerId() {
-        return customerId;
+        return this.customerId;
     }
 
     public Integer getRating() {
-        return rating;
+        return this.rating;
     }
 
     public String getWrittenReview() {
-        return writtenReview;
+        return this.writtenReview;
     }
 
     public UUID getProductId() {
-        return productId;
+        return this.productId;
     }
 }

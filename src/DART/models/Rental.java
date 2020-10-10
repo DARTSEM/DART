@@ -40,5 +40,7 @@ public class Rental {
 
     public Customer getCustomer() { return this.customer; }
 
+    public Product getProduct() { return this.product; }
+
     //rent frequency for items
 }

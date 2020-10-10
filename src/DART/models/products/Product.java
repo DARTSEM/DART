@@ -18,14 +18,11 @@ public class Product {
     protected int productRating;
 
     public Product(String title, double dailyRentFee, ProductType productType, boolean available) {
-
         this.Id = UUID.randomUUID();
         this.title = title;
         this.dailyRentFee = dailyRentFee;
         this.available = available;
-        this.rentDate = LocalDate.now();
         this.productType = productType;
-
     }
 
     public UUID getId() {
@@ -40,45 +37,16 @@ public class Product {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public double getDailyRentFee() {
         return dailyRentFee;
-    }
-
-    public void setDailyRentFee(double dailyRentFee) {
-        this.dailyRentFee = dailyRentFee;
     }
 
     public boolean getAvailable() {
         return this.available;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public LocalDate getRentDate() {
-        return this.rentDate = LocalDate.now();
-    }
-
-    public LocalDate getReturnDate() {
-        return this.returnDate = LocalDate.now();
-    }
-
     public ProductType getProductType() {
         return this.productType;
-    }
-    // in controller, you do setAvailable(false) to set availability of product to false.
-
-    public LocalDate setRentDate() {
-        return this.rentDate = LocalDate.now();
-    }
-
-    public LocalDate setReturnDate() {
-        return this.returnDate = LocalDate.now();
     }
 
     public void rentedProduct() {

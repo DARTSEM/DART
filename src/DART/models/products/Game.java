@@ -6,11 +6,8 @@ public class Game extends Product {
     private String genre;
 
     public Game(String title, String genre, double dailyRentFee, boolean available) {
-
         super(title, dailyRentFee, ProductType.GAME, available);
-
         this.genre = genre;
-
     }
 
     public String getGenre() {

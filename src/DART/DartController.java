@@ -7,13 +7,11 @@ import DART.models.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
-import jdk.jfr.DataAmount;
+import DART.models.products.Rating;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 
 public class DartController {
 
@@ -21,6 +19,8 @@ public class DartController {
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
     public static ArrayList<Rental> rentals = new ArrayList<Rental>();
+    public static HashMap<Product , Rating> ratingsHash;
+
 
     public static void rentProduct(Customer customer, Product product, LocalDate rentDate) {
         product.setAvailable(false);
@@ -180,7 +180,8 @@ public class DartController {
                 "2. Return a game\n" +
                 "3. Upgrade Membership\n" +
                 "4. View inbox and send messages\n" +
-                "5. Return to Main Menu\n");
+                "5. Search products\n" +
+                "6. Return to Main Menu");
     }
 
     public static void customerMessagesPrint() {
@@ -555,13 +556,40 @@ public class DartController {
                                         returns = rental;
                                     }
                                 }
-
-                                if (returns == null) {
+                                Game game = null;
+                                for (int i = 0; i < products.size(); i++) {
+                                    Product currentProduct = products.get(i);
+                                    if (currentProduct.getId().toString().equals(uuid)) {
+                                        if (products.get(i).getProductType() == ProductType.ALBUM)
+                                            game = (Game) products.get(i);
+                                    }
+                                }
+                          if (returns == null) {
                                     System.out.println("Could not find the ID!");
                                     mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
                                     returns.returnRental(LocalDate.now());
-                                    renderSuccess("Rented a game!");
+                                    String writtenReview;
+                                    System.out.println("Leave a numerical rating between 1 and 5.");
+                                    Integer productRate = Utilities.intInput();
+                                    System.out.println("Would you like to leave a written rating?\n1. Yes\n2. No");
+                                    Integer input = Utilities.intInput();
+                                    if (input == 1) {
+                                        //leave written review!
+                                        writtenReview = Utilities.stringInput();
+                                    } else if (input == 2) {
+                                        // dont leave written review!
+                                        // written review = "No written review."
+                                        writtenReview = "No written review";
+                                    } else {
+                                        System.out.println("Wrong input! Cancelling written review.");
+                                        writtenReview = "No written review";
+                                    }
+                                    DART.models.products.Rating r = new Rating(productRate, writtenReview);
+                                    ratingsHash.put(game, r);
+                                    System.out.println("Review left!");
+                                    mainMethod();
+
                                 }
 
                             }
@@ -676,8 +704,23 @@ public class DartController {
                             }
 
                             case 5 -> {
+                                System.out.println("Please input the genre you want to look for.");
+                                String search = Utilities.stringInput();
+                                for (Product product : products) {
+                                    Game game = (product instanceof Game ? (Game) product : null);
+                                    if (game == null) {
+                                        continue;
+                                    }
+                                    if (game.getGenre().equals(search))
+                                        System.out.println(game);
+                                    continue;
+                                }
+                            }
+
+                            case 6 -> {
                                 mainMethod();
                             }
+
                             default -> {
                                 renderError("Your input was wrong.");
                             }

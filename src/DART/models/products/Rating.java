@@ -6,11 +6,9 @@ public class Rating {
    private UUID customerId;
    private UUID productId;
    private Integer rating;
-   private String writtenReview;
+   public String writtenReview;
 
-   public Rating(UUID customerId, UUID productId, Integer rating, String writtenReview){
-       this.customerId = customerId;
-       this.productId = productId; //SEARCH FOR PRODUCT ID
+   public Rating(Integer rating, String writtenReview){
        this.rating = rating;
        this.writtenReview = writtenReview;
    }

@@ -7,7 +7,6 @@ import DART.models.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
-import jdk.jfr.DataAmount;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -92,10 +91,16 @@ public class DartController {
 
     public static void exampleProducts() {
         Employee employee = new Employee();
-        Album dudebro = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
+        Album exampleAlbum = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 1967,
                 200, true);
-        employee.addAlbum(dudebro, products);
-        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3, true);
+        Album exampleAlbum2 = new Album("The Fishe", "Lewis Mercy", 2000,
+                50, true);
+        Album exampleAlbum3 = new Album("Bruh", "Bruh Sound Effects", 2011,
+                25.5, true);
+        employee.addAlbum(exampleAlbum, products);
+        employee.addAlbum(exampleAlbum2, products);
+        employee.addAlbum(exampleAlbum3, products);
+        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 120.5, true);
         Game example2Game = new Game("Groundrim", "Adventure", 100.0, true);
         Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0, true);
         employee.addGame(exampleGame, products);
@@ -454,6 +459,7 @@ public class DartController {
                     } while (ePassword.equals("password123"));
                 }
                 case "C" -> {
+                    boolean nextProductFree = false;
                     Employee employee = new Employee();
                     Customer c = null;
                     String cPassword = null;
@@ -505,13 +511,17 @@ public class DartController {
                                     if (c.getMembership() == MembershipEnum.GOLD || c.getMembership() == MembershipEnum.PLATINUM) {
                                         render("\nYou currently have " + c.getCreditsAmount() + " credits to spend.\n" +
                                                 "For 5 credits you can rent a product for free!\n" +
-                                                "You will receive " + c.getCreditsReceived() + " credits per item rented!");
-                                        if (c.getCreditsAmount() >= 5) {
-                                            int optionCredits = intInput("Would you like to use your credits? 1 for Yes, 2 for No.");
+                                                "You will receive " + c.getCreditsReceived() + " credits per item rented!\n");
+                                        if (c.getCreditsAmount() >= 5 && !nextProductFree) {
+                                            int optionCredits = intInput("Would you like to use your credits?\n" +
+                                                    "1. Yes\n" +
+                                                    "2. No\n");
                                             if (optionCredits == 1) {
-                                                c.resetCreditsAmount();
+                                                nextProductFree = true;
                                             }
-                                        }
+                                        } else if (nextProductFree) {
+                                            render("Note: Your next product will be free and your credits will reset.");
+                                        } // This above prints if the user decides to leave the menu after answering Yes.
                                     }
 
                                     Product p = null;
@@ -525,11 +535,19 @@ public class DartController {
                                         }
                                     }
 
-                                    if (p == null) {
-                                        System.out.println("Could not find the ID!");
+                                    if (p == null || !p.getAvailable()) {
+                                        System.out.println("Could not find the ID or product was already rented!");
 
                                     } else {
+                                        if (nextProductFree) {
+                                            render("This product was rented for free!");
+                                            c.resetCreditsAmount();
+                                            c.setDiscount(0);
+                                            nextProductFree = false;
+                                        }
+                                        c.rentingBenefits(); // Increase credits, increase amount of rented products
                                         rentProduct(c, p, LocalDate.now());
+                                        c.setMembershipValues(); // resets Discount values in case free product
                                         renderSuccess("Rented " + p.getTitle() + "!");
 
                                     }
@@ -550,15 +568,21 @@ public class DartController {
                                 Rental returns = null;
                                 String uuid = stringInput("Please enter the ID of the game you want to return:");
 
-                                for (Rental rental: rentals) {
+                               /* for (Rental rental: rentals) {
                                     if (rental.equals(uuid)) {
                                         returns = rental;
+                                    }
+                                } */
+
+                                for (int i = 0; i < rentals.size(); i++) {
+                                    if (rentals.get(i).toString().equals(uuid)) {
+
+                                        returns = rentals.get(i);
                                     }
                                 }
 
                                 if (returns == null) {
                                     System.out.println("Could not find the ID!");
-                                    mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
                                     returns.returnRental(LocalDate.now());
                                     renderSuccess("Rented a game!");

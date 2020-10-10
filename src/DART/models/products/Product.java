@@ -65,8 +65,6 @@ public class Product {
             availablePrint = "UNAVAILABLE";
         }
         return availablePrint;
-
-
     }
 }
 

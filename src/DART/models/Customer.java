@@ -121,6 +121,14 @@ public class Customer {
         return creditsAmount;
     }
 
+    public void rentingBenefits() {
+        this.amountRent = this.amountRent + 1;
+        if (this.getMembership() == MembershipEnum.GOLD) {
+            this.creditsAmount = this.creditsAmount + 2;
+        } else if (this.getMembership() == MembershipEnum.PLATINUM) {
+            this.creditsAmount = this.creditsAmount + 3;
+        }
+    }
 
     public void resetCreditsAmount() {
         this.creditsAmount = 0;
@@ -134,6 +142,12 @@ public class Customer {
 
         this.password = Utilities.stringInput();
     }
+
+    public void setDiscount(double value) {
+
+        this.discount = value;
+    }
+
 
     public void setMembership() {
         String input = Utilities.stringInput();

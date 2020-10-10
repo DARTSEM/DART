@@ -258,6 +258,18 @@ public class DartController {
                                 }
                             }
                             case 3 -> {
+                                //rent history
+                            }
+                            case 4 -> {
+                                //most profitable item
+                            }
+                            case 5 -> {
+                                //rent frequency of all items
+                            }
+                            case 6 -> {
+                                //retrieve best customer
+                            }
+                            case 7 -> {
                                 mainMethod();
                             }
                             default -> {
@@ -429,11 +441,7 @@ public class DartController {
                                 }
                             }
                             case 6 -> { // total rent profit
-                                double totalRentFee = 0;
-                                for (int i = 0; i < rentals.size(); i++) {
-                                    totalRentFee += rentals.get(i).totalRentFee();
-                                }
-                                System.out.println("The total rent fee is: " + totalRentFee);
+                                System.out.println("The total rent fee is: " + getTotalProfit());
                             }
                             case 7 -> {
                                 mainMethod();
@@ -504,6 +512,7 @@ public class DartController {
                                             }
                                         }
                                     }
+
                                     Product p = null;
                                     String uuid = stringInput("Please enter the ID of the product you want to rent:");
 
@@ -535,21 +544,23 @@ public class DartController {
 
                                 employee.printAllAlbums(products);
 
-                                Game game = null;
+                                Rental returns = null;
                                 String uuid = stringInput("Please enter the ID of the game you want to return:");
-                                for (int i = 0; i < products.size(); i++) {
-                                    Product currentProduct = products.get(i);
-                                    if (currentProduct.getId().toString().equals(uuid)) {
-                                        if (products.get(i).getProductType() == ProductType.ALBUM)
-                                            game = (Game) products.get(i);
+
+                                for (Rental rental: rentals) {
+                                    if (rental.equals(uuid)) {
+                                        returns = rental;
                                     }
                                 }
-                                if (game == null) {
+
+                                if (returns == null) {
                                     System.out.println("Could not find the ID!");
+                                    mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
-                                    c.returnGame(game);
+                                    returns.returnRental(LocalDate.now());
                                     renderSuccess("Rented a game!");
                                 }
+
                             }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +

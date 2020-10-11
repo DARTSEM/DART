@@ -29,4 +29,10 @@ public class Manager {
             System.out.println(employees.get(i).toString());
         }
     }
+
+    public void printAllRentals(ArrayList<Rental> rentals) {
+        for (int i = 0; i < rentals.size(); i++) {
+            System.out.println(rentals.get(i).toString());
+        }
+    }
 }

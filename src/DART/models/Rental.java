@@ -38,9 +38,21 @@ public class Rental {
         return discountedFee;
     }
 
+    public long totalDays() {
+        LocalDate endDate = this.returnDate == null ? LocalDate.now() : this.returnDate; //
+        // long daysBetween = Duration.between(this.rentDate, endDate).toDays();
+        long daysBetween = Period.between(rentDate, endDate).getDays() + 1;
+        return daysBetween;
+    }
+
     public Customer getCustomer() { return this.customer; }
 
     public Product getProduct() { return this.product; }
+
+    @Override
+    public String toString() {
+        return getCustomer().getId() + " : " + totalDays() + " , " + getProduct().getId() + ".";
+    }
 
     //rent frequency for items
 }

@@ -48,6 +48,85 @@ public class DartController {
         return customerRentals;
     }
 
+    public static Product mostProfitable() {
+        HashMap<Product, Double> map = new HashMap<>();
+        for (Rental rental : DartController.rentals) {
+            Product product = rental.getProduct();
+
+            //gets value in collection, but if null then returns default (gets back 0 as current gross if not in the map)
+            double currentGross = map.getOrDefault(product, 0.0);
+
+            //sets product to be current gross plus the rental fee to what I am looking at
+            map.put(product, currentGross + rental.totalRentFee()); //tallies up rental sum plus the rental we are
+            // looking at
+        }
+        //contains all products rented and all fees ever charged in transaction history
+
+        Product maxProduct = null;
+        double maxValue = 0;
+
+        //Map.entry iterates over what we already have in hashmap
+        for(Map.Entry<Product, Double> entry : map.entrySet()) { //hash table (collection of map entries)
+            //iterating over entries in map, looking at value for each product
+            if (entry.getValue() > maxValue) { //store entry if greater than max value, otherwise it is skipped over
+                maxProduct = entry.getKey();
+                maxValue = entry.getValue();
+            }
+        }
+        //now maxValue contains largest value, and maxProduct contains the product that eared that value
+        return maxProduct;
+    }
+
+    public static Customer bestCustomer() {
+        HashMap<Customer, Double> map = new HashMap<>();
+        for (Rental rental : DartController.rentals) {
+            Customer customer = rental.getCustomer();
+
+            //gets value in collection, but if null then returns default (gets back 0 as current gross if not in the map)
+            double currentGross = map.getOrDefault(customer, 0.0);
+
+            //sets customer to be current gross plus the rental fee to what I am looking at
+            map.put(customer, currentGross + rental.totalRentFee()); //tallies up rental sum plus the rental we are
+            // looking at
+        }
+        //contains all customers' rentals and all fees ever charged in transaction history
+
+        Customer maxCustomer = null;
+        double maxValue = 0;
+
+        //Map.entry iterates over what we already have in hashmap
+        for(Map.Entry<Customer, Double> entry : map.entrySet()) { //hash table (collection of map entries)
+            //iterating over entries in map, looking at value for each product
+            if (entry.getValue() > maxValue) { //store entry if greater than max value, otherwise it is skipped over
+                maxCustomer = entry.getKey();
+                maxValue = entry.getValue();
+            }
+        }
+        //now maxValue contains largest value, and maxCustomer contains the customer that eared that value
+        return maxCustomer;
+    }
+
+    public static void rentalFrequency() {
+        HashMap<Product, Integer> map = new HashMap<>();
+        for (Rental rental : DartController.rentals) {
+            Product product = rental.getProduct();
+
+            //gets value in collection, but if null then returns default (gets back 0 as current gross if not in the map)
+            Integer currentCount = map.getOrDefault(product,0);
+
+            //sets product to be current gross plus the rental fee to what I am looking at
+            map.put(product, currentCount + 1); //tallies up reach instance of specific rental we are looking at
+        }
+        //contains all products rented and all fees ever charged in transaction history
+
+
+        //Map.entry iterates over what we already have in hashmap
+        for(Map.Entry<Product, Integer> entry : map.entrySet()) { //hash table (collection of map entries)
+            //iterating over entries in map, looking at value for each product
+            System.out.print("The rental frequency for " + entry.getKey().getTitle() + " is " + entry.getValue());
+        }
+    }
+
     //modify to reflect changes in architecture
     // calculates total profit for all rentals
     public static Double getTotalProfit() {
@@ -159,7 +238,11 @@ public class DartController {
         System.out.println(Utilities.line() + "Manager Screen - Type one of the options below:\n" +
                 "1. Add an employee\n" +
                 "2. View all employees\n" +
-                "3. Return to Main Menu\n");
+                "3. View all transactions\n" +
+                "4. View most profitable product\n" +
+                "5. View rental frequency\n" +
+                "6. View best customer\n" +
+                "7. Return to Main Menu\n");
     }
 
     public static void employeeMenuPrint() {
@@ -260,15 +343,21 @@ public class DartController {
                             }
                             case 3 -> {
                                 //rent history
+                                System.out.println("All transactions of all products:\n");
+                                manager.printAllRentals(rentals);
                             }
                             case 4 -> {
                                 //most profitable item
+                                System.out.println("The most profitable product is:\n" + mostProfitable());
+
                             }
                             case 5 -> {
                                 //rent frequency of all items
+                                rentalFrequency();
                             }
                             case 6 -> {
                                 //retrieve best customer
+                                System.out.println("Here is your best customer:\n" + bestCustomer());
                             }
                             case 7 -> {
                                 mainMethod();
@@ -345,11 +434,9 @@ public class DartController {
                                 // view products
 
                                 System.out.println("===GAMES===");
-
                                 employee.printAllGames(products);
 
                                 System.out.println("===SONG ALBUMS===");
-
                                 employee.printAllAlbums(products);
 
                                 int option3 = intInput("\n1. Remove Game\n" +

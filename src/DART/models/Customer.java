@@ -3,8 +3,6 @@ package DART.models;
 import DART.enums.MembershipEnum;
 import DART.miscellaneous.Utilities;
 import DART.models.products.Album;
-import DART.models.products.Game;
-import DART.models.products.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ public class Customer {
     private int maxRent;
     private int creditsReceived;
     private int creditsAmount;
+    private boolean nextProductFree;
 
     public Customer(String name, String password, MembershipEnum membership) {
         Id = UUID.randomUUID(); // we don't need user input to make an ID, therefore it's not a parameter in constructor
@@ -36,6 +35,7 @@ public class Customer {
         this.maxRent = 1;
         this.creditsReceived = 0;
         this.creditsAmount = 0;
+        this.nextProductFree = false;
 
 
     }
@@ -121,8 +121,13 @@ public class Customer {
         return creditsAmount;
     }
 
+    public boolean getNextProductFree() {
+        return nextProductFree;
+    }
+
     public void rentingBenefits() {
         this.amountRent = this.amountRent + 1;
+        this.nextProductFree = false;
         if (this.getMembership() == MembershipEnum.GOLD) {
             this.creditsAmount = this.creditsAmount + 2;
         } else if (this.getMembership() == MembershipEnum.PLATINUM) {
@@ -148,6 +153,9 @@ public class Customer {
         this.discount = value;
     }
 
+    public void setNextProductFree(boolean value) {
+        this.nextProductFree = value;
+    }
 
     public void setMembership() {
         String input = Utilities.stringInput();

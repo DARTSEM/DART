@@ -171,12 +171,18 @@ public class DartController {
 
     public static void exampleProducts() {
         Employee employee = new Employee();
-        Album dudebro = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
+        Album exampleAlbum = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
                 200, true);
-        employee.addAlbum(dudebro, products);
-        dudebro.ratings.add(4);
-        dudebro.ratings.add(3);
-        dudebro.ratings.add(2);
+        Album exampleAlbum2 = new Album("The Fishe", "Lewis Mercy", 2000,
+                50, true);
+        Album exampleAlbum3 = new Album("Bruh", "Bruh Sound Effects", 2011,
+                25.5, true);
+        employee.addAlbum(exampleAlbum, products);
+        employee.addAlbum(exampleAlbum2, products);
+        employee.addAlbum(exampleAlbum3, products);
+        exampleAlbum.ratings.add(4);
+        exampleAlbum2.ratings.add(3);
+        exampleAlbum3.ratings.add(2);
 
 
         Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3, true);
@@ -609,15 +615,17 @@ public class DartController {
                                         render("\nYou currently have " + c.getCreditsAmount() + " credits to spend.\n" +
                                                 "For 5 credits you can rent a product for free!\n" +
                                                 "You will receive " + c.getCreditsReceived() + " credits per item rented!");
-                                        if (c.getCreditsAmount() >= 5) {
+                                        if (c.getCreditsAmount() >= 5 && !c.getNextProductFree()) {
                                             int optionCredits = intInput("Would you like to use your credits?\n" +
                                                     "1. Yes\n" +
-                                                    "2. No.");
+                                                    "2. No");
                                             if (optionCredits == 1) {
+                                                c.setNextProductFree(true);
                                                 c.resetCreditsAmount();
                                             }
-                                        }
-                                    }
+                                        } else if (c.getNextProductFree())
+                                            render("Note: Your next product will be free and your credits will reset.");
+                                    } // This above prints if the user decides to leave the menu after answering Yes.
 
                                     Product p = null;
                                     String uuid = stringInput("Please enter the ID of the product you want to rent:");
@@ -630,16 +638,31 @@ public class DartController {
                                         }
                                     }
 
-                                    if (p == null) {
-                                        System.out.println("Could not find the ID!");
+                                    if (p == null || !p.getAvailable()) {
+                                        System.out.println("Could not find the ID or product was already rented!");
 
                                     } else {
+                                        if (c.getNextProductFree()) {
+                                            c.setDiscount(0);
+                                            renderSuccess("Your product was rented for free!");
+                                        }
+
+                                        c.rentingBenefits();
                                         rentProduct(c, p, LocalDate.now());
+                                        c.setMembershipValues(); //  resets Discount values in case free product
                                         renderSuccess("Rented " + p.getTitle() + "!");
 
                                     }
                                 } else {
-                                    render("You are only allowed to rent " + c.getMaxRent() + " product(s)!");
+                                    double withDecimals = c.getMaxRent();
+                                    int maxRentText = (int) withDecimals; // forces it to not have decimals
+                                    String plural = "";
+                                    if (c.getMaxRent() > 1) {
+                                        plural = "s";
+                                    } else {
+                                        plural = "";
+                                    }
+                                    render("You are only allowed to rent " + maxRentText  + " product" + plural + "!");
                                 }
                             }
 
@@ -686,43 +709,43 @@ public class DartController {
                                     }
 
 
-                                        returns.returnRental(LocalDate.now());
-                                        System.out.println("Successfully returned a product!");
+                                    returns.returnRental(LocalDate.now());
+                                    System.out.println("Successfully returned a product!");
 
 
-                                        returns.returnRental(LocalDate.now());
-                                        System.out.println("Successfully returned a product!");
+                                    returns.returnRental(LocalDate.now());
+                                    System.out.println("Successfully returned a product!");
 
 
-                                        String writtenReview;
-                                        System.out.println("Leave a numerical rating between 1 and 5.");
-                                        Integer productRating = Utilities.intInput();
-                                        System.out.println("Would you like to leave a written review?\n" +
-                                                "1. Yes" +
-                                                "\n2. No");
-                                        Integer input = Utilities.intInput();
-                                        if (input == 1) {
-                                            //leave written review!
-                                            writtenReview = Utilities.stringInput();
-                                        } else if (input == 2) {
-                                            // dont leave written review!
-                                            writtenReview = "No written review";
-                                        } else {
-                                            System.out.println("Wrong input! Cancelling written review.");
-                                            writtenReview = "No written review";
+                                    String writtenReview;
+                                    System.out.println("Leave a numerical rating between 1 and 5.");
+                                    Integer productRating = Utilities.intInput();
+                                    System.out.println("Would you like to leave a written review?\n" +
+                                            "1. Yes" +
+                                            "\n2. No");
+                                    Integer input = Utilities.intInput();
+                                    if (input == 1) {
+                                        //leave written review!
+                                        writtenReview = Utilities.stringInput();
+                                    } else if (input == 2) {
+                                        // dont leave written review!
+                                        writtenReview = "No written review";
+                                    } else {
+                                        System.out.println("Wrong input! Cancelling written review.");
+                                        writtenReview = "No written review";
 
-                                        }
-
-                                        Rating r = new Rating(productRating, writtenReview);
-                                        p.ratings.add(productRating);
-                                        rating.add(r);
-                                        ratingsHash.put(p.ratings, p);
-                                        System.out.println("Successfully submitted your review!");
-
-                                        mainMethod();
                                     }
 
+                                    Rating r = new Rating(productRating, writtenReview);
+                                    p.ratings.add(productRating);
+                                    rating.add(r);
+                                    ratingsHash.put(p.ratings, p);
+                                    System.out.println("Successfully submitted your review!");
+
+                                    mainMethod();
                                 }
+
+                            }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
                                         " Memberships!\n" +
@@ -834,7 +857,7 @@ public class DartController {
                             }
 
                             case 5 -> {
-                                System.out.println("Would you like to search games or albums?\n1.Games\n2.Albums");
+                                System.out.println("Would you like to search games or albums?\n1.Games (via genre)\n2.Albums (via release year)");
                                 int search = Utilities.intInput();
                                 if (search == 1) {
                                     System.out.println("What genre are you looking for?");

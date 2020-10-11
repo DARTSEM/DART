@@ -9,24 +9,29 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Product {
-    protected UUID Id;
-    protected String title;
-    protected double dailyRentFee;
-    protected boolean available;
-    protected LocalDate rentDate;
-    protected LocalDate returnDate;
-    protected ProductType productType;
-    protected int productRating;
+    private UUID Id;
+    private String title;
+    private double dailyRentFee;
+    private boolean available;
+    private LocalDate rentDate;
+    private LocalDate returnDate;
+    private ProductType productType;
+    private int productRating;
     public ArrayList<Integer> ratings;
+    public Double averageRating;
+    private int releaseYear;
 
 
-    public Product(String title, double dailyRentFee, ProductType productType, boolean available) {
+
+    public Product(String title, double dailyRentFee, int releaseYear, ProductType productType, boolean available) {
         this.Id = UUID.randomUUID();
         this.title = title;
         this.dailyRentFee = dailyRentFee;
         this.available = available;
         this.productType = productType;
         this.ratings = new ArrayList<Integer>();
+        this.averageRating = averageRating;
+        this.releaseYear = releaseYear;
 
     }
 
@@ -37,6 +42,8 @@ public class Product {
     public int getProductRating() {
         return productRating;
     }
+
+    public int getReleaseYear(){ return releaseYear; }
 
     public String getTitle() {
         return title;
@@ -62,8 +69,10 @@ public class Product {
         this.available = true;
     }
 
+
     public double calculateAverage() {
         Integer sum = 0;
+        double rating;
         if(!ratings.isEmpty()) {
             for (Integer productRating : ratings) {
                 sum += productRating;
@@ -82,5 +91,6 @@ public class Product {
         }
         return availablePrint;
     }
+
 }
 

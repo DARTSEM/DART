@@ -11,6 +11,8 @@ import DART.models.products.Rating;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 
 public class DartController {
@@ -77,6 +79,7 @@ public class DartController {
         //now maxValue contains largest value, and maxProduct contains the product that eared that value
         return maxProduct;
     }
+
 
     public static Customer bestCustomer() {
         HashMap<Customer, Double> map = new HashMap<>();
@@ -185,14 +188,15 @@ public class DartController {
         exampleAlbum3.ratings.add(2);
 
 
-        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3, true);
-        Game example2Game = new Game("Groundrim", "Adventure", 100.0, true);
-        Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0, true);
+        Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 2009, 112, true);
+        Game example2Game = new Game("Groundrim", "RPG", 2011, 32, true);
+        Game example3Game = new Game("Not Portal 2", "Puzzle", 2011, 4, true);
         employee.addGame(exampleGame, products);
         employee.addGame(example2Game, products);
         employee.addGame(example3Game, products);
         exampleGame.ratings.add(3);
         exampleGame.ratings.add(1);
+        exampleGame.ratings.add(4);
         example2Game.ratings.add(1);
         example2Game.ratings.add(3);
         example2Game.ratings.add(2);
@@ -417,9 +421,10 @@ public class DartController {
                                     case 1 -> {
                                         String title = stringInput("Enter the game's title: ");
                                         String genre = stringInput("Enter the game's genre: ");
+                                        int releaseYear = intInput("Enter the game's release year: ");
                                         double dailyRentFee = doubleInput("Enter the daily rent fee: ");
 
-                                        Game g = new Game(title, genre, dailyRentFee, true);
+                                        Game g = new Game(title, genre, releaseYear, dailyRentFee, true);
                                         employee.addGame(g, products);
                                         renderSuccess("Game created!");
                                     }
@@ -682,18 +687,6 @@ public class DartController {
                                     }
                                 }
 
-                                /*
-                                Game game = null;
-
-                                for (int i = 0; i < products.size(); i++) {
-                                    Product currentProduct = products.get(i);
-                                    if (currentProduct.getId().toString().equals(uuid)) {
-                                        if (products.get(i).getProductType() == ProductType.ALBUM)
-                                            game = (Game) products.get(i);
-                                    }
-                                }
-                                */
-
                                 if (returns == null) {
                                     System.out.println("Could not find the ID!");
                                     mainMethod(); // temporary solution, need to fix the while loop
@@ -885,9 +878,7 @@ public class DartController {
                                 }
                             }
 
-                            case 6 -> {
-
-                            }
+                            case 6 -> { }
 
                             default -> {
                                 renderError("Your input was wrong.");

@@ -22,7 +22,7 @@ public class DartController {
     public static List<Product> products = new ArrayList<Product>();
     public static ArrayList<Employee> employees = new ArrayList<Employee>();
     public static ArrayList<Rental> rentals = new ArrayList<Rental>();
-    public static HashMap<ArrayList<Integer>, Game> ratingsHash = new HashMap<>();
+    public static HashMap<ArrayList<Integer>, Product> ratingsHash = new HashMap<>();
     public static ArrayList<Rating> rating = new ArrayList<>();
 
 
@@ -101,12 +101,25 @@ public class DartController {
         Album dudebro = new Album("Mongolian Thiccest Throat Remastered", "Khanis Ginger", 2000,
                 200, true);
         employee.addAlbum(dudebro, products);
+        dudebro.ratings.add(4);
+        dudebro.ratings.add(3);
+        dudebro.ratings.add(2);
+
+
         Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 122.3, true);
         Game example2Game = new Game("Groundrim", "Adventure", 100.0, true);
         Game example3Game = new Game("Not Portal 2", "Puzzle", 60.0, true);
         employee.addGame(exampleGame, products);
         employee.addGame(example2Game, products);
         employee.addGame(example3Game, products);
+        exampleGame.ratings.add(3);
+        exampleGame.ratings.add(1);
+        example2Game.ratings.add(1);
+        example2Game.ratings.add(3);
+        example2Game.ratings.add(2);
+        example3Game.ratings.add(5);
+        example3Game.ratings.add(5);
+        example3Game.ratings.add(2);
     }
 
     public static void exampleEmployees() {
@@ -572,41 +585,46 @@ public class DartController {
                                     System.out.println("Could not find the ID!");
                                     mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
-                                    for (Product product : products) {
-                                        Game game = (product instanceof Game ? (Game) product : null);
 
-                                        returns.returnRental(LocalDate.now());
-                                        System.out.println("Successfully returned a product!");
+                                    Product p = null;
 
+                                    for (int i = 0; i < products.size(); i++) {
+                                        if (products.get(i).getId().toString().equals(uuid)) {
 
-                                        String writtenReview;
-                                        System.out.println("Leave a numerical rating between 1 and 5.");
-                                        Integer productRating = Utilities.intInput();
-                                        System.out.println("Would you like to leave a written review?\n" +
-                                                "1. Yes" +
-                                                "\n2. No");
-                                        Integer input = Utilities.intInput();
-                                        if (input == 1) {
-                                            //leave written review!
-                                            writtenReview = Utilities.stringInput();
-                                        } else if (input == 2) {
-                                            // dont leave written review!
-                                            writtenReview = "No written review";
-                                        } else {
-                                            System.out.println("Wrong input! Cancelling written review.");
-                                            writtenReview = "No written review";
-
-                                        }
-
-                                        Rating r = new Rating(productRating, writtenReview);
-                                        game.ratings.add(productRating);
-                                        rating.add(r);
-                                        ratingsHash.put(game.ratings, game);
-                                        System.out.println("Successfully submitted your review!");
+                                            p = products.get(i);
                                         }
                                     }
-                                }
 
+                                    returns.returnRental(LocalDate.now());
+                                    System.out.println("Successfully returned a product!");
+
+
+                                    String writtenReview;
+                                    System.out.println("Leave a numerical rating between 1 and 5.");
+                                    Integer productRating = Utilities.intInput();
+                                    System.out.println("Would you like to leave a written review?\n" +
+                                            "1. Yes" +
+                                            "\n2. No");
+                                    Integer input = Utilities.intInput();
+                                    if (input == 1) {
+                                        //leave written review!
+                                        writtenReview = Utilities.stringInput();
+                                    } else if (input == 2) {
+                                        // dont leave written review!
+                                        writtenReview = "No written review";
+                                    } else {
+                                        System.out.println("Wrong input! Cancelling written review.");
+                                        writtenReview = "No written review";
+
+                                    }
+
+                                    Rating r = new Rating(productRating, writtenReview);
+                                    p.ratings.add(productRating);
+                                    rating.add(r);
+                                    ratingsHash.put(p.ratings, p);
+                                    System.out.println("Successfully submitted your review!");
+                                }
+                            }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
                                         " Memberships!\n" +
@@ -751,7 +769,6 @@ public class DartController {
                             }
 
                             case 6 -> {//sort by rating
-
                             }
                             default -> {
                                 renderError("Your input was wrong.");

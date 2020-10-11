@@ -5,7 +5,8 @@ import DART.models.Customer;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.UUID;
+import java.util.*;
+import java.util.Comparator;
 
 public class Product {
     protected UUID Id;
@@ -15,7 +16,10 @@ public class Product {
     protected LocalDate rentDate;
     protected LocalDate returnDate;
     protected ProductType productType;
-    protected int productRating;
+    public Integer productRating;
+    public ArrayList<Integer> ratings;
+
+
 
     public Product(String title, double dailyRentFee, ProductType productType, boolean available) {
         this.Id = UUID.randomUUID();
@@ -23,7 +27,22 @@ public class Product {
         this.dailyRentFee = dailyRentFee;
         this.available = available;
         this.productType = productType;
+        this.ratings = new ArrayList<Integer>();
     }
+
+
+
+    public double calculateAverage() {
+        Integer sum = 0;
+        if(!ratings.isEmpty()) {
+            for (Integer productRating : ratings) {
+                sum += productRating;
+            }
+            return sum.doubleValue() / ratings.size();
+        }
+        return sum;
+    }
+
 
     public UUID getId() {
         return Id;

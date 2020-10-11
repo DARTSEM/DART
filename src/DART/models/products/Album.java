@@ -25,8 +25,8 @@ public class Album extends Product {
 
     @Override
     public String toString() {
-        return getId() + " : '" + getTitle() + "' by " + getArtist() + ". Price: " + getDailyRentFee() +
-                " SEK/day. - " + printAvailable();
+        return getId() + " : '" + getTitle() + "' by " + getArtist() + ". Released in " + getReleaseYear() + ". Price: " + getDailyRentFee() +
+                " SEK/day. - " + printAvailable() + ". Average rating of: " + calculateAverage();
     }
 }
 

@@ -834,21 +834,36 @@ public class DartController {
                             }
 
                             case 5 -> {
-                                System.out.println("Please input the genre you want to look for.");
-                                String search = Utilities.stringInput();
-                                for (Product product : products) {
-                                    Game game = (product instanceof Game ? (Game) product : null);
-                                    if (game == null) {
-                                        continue;
+                                System.out.println("Would you like to search games or albums?\n1.Games\n2.Albums");
+                                int search = Utilities.intInput();
+                                if (search == 1) {
+                                    System.out.println("What genre are you looking for?");
+                                    String query = Utilities.stringInput();
+                                    for (Product product : products) {
+                                        Game game = (product instanceof Game ? (Game) product : null);
+                                        if (game == null) {
+                                            continue;
+                                        }
+                                        if (game.getGenre().equals(query))
+                                            System.out.println(game);
                                     }
-                                    if (game.getGenre().equals(search))
-                                        System.out.println(game);
-                                    continue;
+
+                                } else if (search == 2) {
+                                    System.out.println("What year was the album released?");
+                                    int query = Utilities.intInput();
+                                    for (Product product : products) {
+                                        Album album = (product instanceof Album ? (Album) product : null);
+                                        if (album == null) {
+                                            continue;
+                                        }
+                                        if (album.getReleaseYear() == query)
+                                            System.out.println(album);
+                                    }
                                 }
                             }
 
                             case 6 -> {
-                                mainMethod();
+
                             }
 
                             default -> {

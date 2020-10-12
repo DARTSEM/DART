@@ -222,11 +222,21 @@ public class DartController {
         System.out.println(message);
         return Utilities.doubleInput();
     }
+    public static double doubleInputNoNegative(String message, String error) {
+        System.out.println(message);
+        return Utilities.doubleInputNoNegative(error);
+    }
 
     public static String stringInput(String message) {
         System.out.println(message);
         return Utilities.stringInput();
     }
+
+    public static String stringInputNoEmpty(String message, String error) {
+        System.out.println(message);
+        return Utilities.stringInputNoEmpty(error);
+    }
+    // difference between these methods with the one in the Utilities is that they include a message.
 
     public static void render(String message) {
         System.out.println(message);
@@ -337,12 +347,12 @@ public class DartController {
                         int option = intInput("");
                         switch (option) {
                             case 1 -> {
-                                String firstname = stringInput("Please enter the first name of the employee");
-                                String lastname = stringInput("Please enter the last name of the employee");
+                                String firstname = stringInputNoEmpty("Please enter the employee's first name: ", "Employee name cannot be empty.");
+                                String lastname = stringInputNoEmpty("Please enter the employee's last name: ", "Employee name cannot be empty.");
                                 int birthyear = intInput("Please enter the birth year of the employee");
                                 String address1 = stringInput("Please enter the address 1 of the employee");
                                 String address2 = stringInput("Please enter the address 2 of the employee");
-                                double salary = doubleInput("Please enter the salary");
+                                double salary = doubleInputNoNegative("Please enter the salary", "Employee salary cannot be negative.");
 
                                 Employee e = new Employee(firstname, lastname, birthyear, address1, address2, salary);
 
@@ -417,7 +427,7 @@ public class DartController {
                                         "2. Albums");
                                 switch (option2) {
                                     case 1 -> {
-                                        String title = stringInput("Enter the game's title: ");
+                                        String title = stringInputNoEmpty("Enter the game's title: ", "Game name cannot be empty.");
                                         String genre = stringInput("Enter the game's genre: ");
                                         int releaseYear = LocalDate.now().getYear() + 1;
                                         while (releaseYear >= LocalDate.now().getYear()) {
@@ -427,15 +437,15 @@ public class DartController {
                                                         "\nYour release year can't be set in the future.");
                                             }
                                         }
-                                        double dailyRentFee = doubleInput("Enter the daily rent fee: ");
+                                        double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Game daily rent fee cannot be negative.");
 
                                         Game g = new Game(title, genre, releaseYear, dailyRentFee, true);
                                         employee.addGame(g, products);
                                         renderSuccess("Game created!");
                                     }
                                     case 2 -> {
-                                        String title = stringInput("Enter the album's title: ");
-                                        String artist = stringInput("Enter the album's artist: ");
+                                        String title = stringInputNoEmpty("Enter the album's title: ", "Album title name cannot be empty.");
+                                        String artist = stringInputNoEmpty("Enter the album's artist: ", "Album artist name cannot be empty");
 
                                         int releaseYear = LocalDate.now().getYear() + 1;
 
@@ -446,7 +456,7 @@ public class DartController {
                                                         "\nYour release year can't be set in the future.");
                                             }
                                         }
-                                        double dailyRentFee = doubleInput("Enter the daily rent fee: ");
+                                        double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Album rent fee cannot be negative.");
 
                                         Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
                                         employee.addAlbum(s, products);
@@ -458,7 +468,7 @@ public class DartController {
                                 }
                             }
                             case 2 -> {
-                                String name = stringInput("Enter the customer's full name: ");
+                                String name = stringInputNoEmpty("Enter the customer's full name: ", "Customer name cannot be empty.");
                                 String password = "";
                                 while (password.length() < 4 || password.contains(" ")) {
                                     password = stringInput("Enter the customer's password: ");

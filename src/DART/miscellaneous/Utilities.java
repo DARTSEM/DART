@@ -36,9 +36,29 @@ public class Utilities {
         }
         return value;
     }
+    public static double doubleInputNoNegative(String error) {
+
+        double value = doubleInput();
+        while (value < 0) {
+            System.out.println("Invalid data. " + error);
+            value = doubleInput();
+        }
+        return value;
+    }
+
 
     public static String stringInput() {
         return scan.nextLine();
+    }
+
+    public static String stringInputNoEmpty(String error) {
+
+        String text = stringInput();
+        while (text.isEmpty()) {
+            System.out.println("Invalid data. " + error);
+            text = stringInput();
+        }
+        return text;
     }
 
     public static void closeScanner() {

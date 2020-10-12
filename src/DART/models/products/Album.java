@@ -1,6 +1,7 @@
 package DART.models.products;
 
 import DART.enums.ProductType;
+
 import java.text.DecimalFormat;
 
 public class Album extends Product {
@@ -22,7 +23,8 @@ public class Album extends Product {
     @Override
     public String toString() {
         return getId() + " : '" + getTitle() + "' by " + getArtist() + ". Released in " + getReleaseYear() +
-                ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + ". Average rating of: " + df2.format(calculateAverage());
+                ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + ". Average rating of: " + df2.format(getAverageRatings());
     }
 }
+
 

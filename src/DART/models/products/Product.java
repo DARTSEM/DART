@@ -45,9 +45,7 @@ public class Product {
 
     public int getReleaseYear(){ return releaseYear; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title;}
 
     public double getDailyRentFee() {
         return dailyRentFee;
@@ -70,7 +68,8 @@ public class Product {
     }
 
 
-    public double calculateAverage() {
+
+    public double getAverageRatings() {
         Integer sum = 0;
         double rating;
         if(!ratings.isEmpty()) {
@@ -81,7 +80,6 @@ public class Product {
         }
         return sum;
     }
-
     public String printAvailable() {
         String availablePrint;
         if (available == true) {
@@ -91,6 +89,5 @@ public class Product {
         }
         return availablePrint;
     }
-
 }
 

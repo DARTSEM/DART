@@ -11,8 +11,6 @@ import DART.models.products.Rating;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 
 public class DartController {
@@ -79,7 +77,6 @@ public class DartController {
         //now maxValue contains largest value, and maxProduct contains the product that eared that value
         return maxProduct;
     }
-
 
     public static Customer bestCustomer() {
         HashMap<Customer, Double> map = new HashMap<>();
@@ -225,11 +222,20 @@ public class DartController {
         System.out.println(message);
         return Utilities.doubleInput();
     }
+    public static double doubleInputNoNegative(String message, String error) {
+        System.out.println(message);
+        return Utilities.doubleInputNoNegative(error);
 
     public static String stringInput(String message) {
         System.out.println(message);
         return Utilities.stringInput();
     }
+
+    public static String stringInputNoEmpty(String message, String error) {
+        System.out.println(message);
+        return Utilities.stringInputNoEmpty(error);
+    }
+    // difference between these methods with the one in the Utilities is that they include a message.
 
     public static void render(String message) {
         System.out.println(message);
@@ -287,7 +293,8 @@ public class DartController {
                 "3. Upgrade Membership\n" +
                 "4. View inbox and send messages\n" +
                 "5. Search products\n" +
-                "6. Return to Main Menu");
+                "6. View products sorted by...\n" +
+                "7. Return to Main Menu\n");
     }
 
     public static void customerMessagesPrint() {
@@ -344,7 +351,7 @@ public class DartController {
                                 int birthyear = intInput("Please enter the birth year of the employee");
                                 String address1 = stringInput("Please enter the address 1 of the employee");
                                 String address2 = stringInput("Please enter the address 2 of the employee");
-                                double salary = doubleInput("Please enter the salary");
+                                double salary = doubleInputNoNegative("Please enter the salary", "Employee salary cannot be negative.");
 
                                 Employee e = new Employee(firstname, lastname, birthyear, address1, address2, salary);
 
@@ -419,20 +426,36 @@ public class DartController {
                                         "2. Albums");
                                 switch (option2) {
                                     case 1 -> {
-                                        String title = stringInput("Enter the game's title: ");
+                                        String title = stringInputNoEmpty("Enter the game's title: ", "Game name cannot be empty.");
                                         String genre = stringInput("Enter the game's genre: ");
-                                        int releaseYear = intInput("Enter the game's release year: ");
-                                        double dailyRentFee = doubleInput("Enter the daily rent fee: ");
+                                        int releaseYear = LocalDate.now().getYear() + 1;
+                                        while (releaseYear >= LocalDate.now().getYear()) {
+                                            releaseYear = intInput("Enter the game's release year: ");
+                                            if (releaseYear >= LocalDate.now().getYear()) {
+                                                render("Wait a minute, Doc. Are you telling me you built a time machine...out of a DeLorean?!" +
+                                                        "\nYour release year can't be set in the future.");
+                                            }
+                                        }
+                                        double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Game daily rent fee cannot be negative.");
 
                                         Game g = new Game(title, genre, releaseYear, dailyRentFee, true);
                                         employee.addGame(g, products);
                                         renderSuccess("Game created!");
                                     }
                                     case 2 -> {
-                                        String title = stringInput("Enter the album's title: ");
-                                        String artist = stringInput("Enter the album's artist: ");
-                                        int releaseYear = intInput("Enter the album's release year: ");
-                                        double dailyRentFee = doubleInput("Enter the daily rent fee: ");
+                                        String title = stringInputNoEmpty("Enter the album's title: ", "Album title name cannot be empty.");
+                                        String artist = stringInputNoEmpty("Enter the album's artist: ", "Album artist name cannot be empty");
+
+                                        int releaseYear = LocalDate.now().getYear() + 1;
+
+                                        while (releaseYear >= LocalDate.now().getYear()) {
+                                            releaseYear = intInput("Enter the album's release year: ");
+                                            if (releaseYear >= LocalDate.now().getYear()) {
+                                                render("Guess you guys aren't ready for that yet... but your kids are gonna love it." +
+                                                        "\nYour release year can't be set in the future.");
+                                            }
+                                        }
+                                        double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Album rent fee cannot be negative.");
 
                                         Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
                                         employee.addAlbum(s, products);
@@ -444,11 +467,18 @@ public class DartController {
                                 }
                             }
                             case 2 -> {
-                                String name = stringInput("Enter the customer's full name: ");
-                                String password = stringInput("Enter the customer's password: ");
-                                String input = stringInput("Set customer's membership:");
+                                String name = stringInputNoEmpty("Enter the customer's full name: ", "Customer name cannot be empty.");
+                                String password = "";
+                                while (password.length() < 4 || password.contains(" ")) {
+                                    password = stringInput("Enter the customer's password: ");
+                                    if (password.length() < 4) {
+                                        render("The password you set must be higher than three characters long!");
+                                    }
+                                    if (password.contains(" ")) {
+                                        render("The password you set can't contain any spaces!");
+                                    }
+                                }
                                 MembershipEnum membership = MembershipEnum.BASIC;
-
 
                                 Customer c = new Customer(name, password, membership);
                                 employee.addCustomer(c, customers);
@@ -504,7 +534,7 @@ public class DartController {
                                                 "an option:\n" +
                                                 "NAME\n" +
                                                 "PASSWORD\n" +
-                                                "MEMBERSHIP\n");
+                                                "MEMBERSHIP - will upgrade by one instance\n");
 
                                         modification = modification.toLowerCase();
                                         employee.modifyCustomer(uuid, customers, modification);
@@ -687,6 +717,18 @@ public class DartController {
                                     }
                                 }
 
+                                /*
+                                Game game = null;
+
+                                for (int i = 0; i < products.size(); i++) {
+                                    Product currentProduct = products.get(i);
+                                    if (currentProduct.getId().toString().equals(uuid)) {
+                                        if (products.get(i).getProductType() == ProductType.ALBUM)
+                                            game = (Game) products.get(i);
+                                    }
+                                }
+                                */
+
                                 if (returns == null) {
                                     System.out.println("Could not find the ID!");
                                     mainMethod(); // temporary solution, need to fix the while loop
@@ -702,43 +744,43 @@ public class DartController {
                                     }
 
 
-                                    returns.returnRental(LocalDate.now());
-                                    System.out.println("Successfully returned a product!");
+                                        returns.returnRental(LocalDate.now());
+                                        System.out.println("Successfully returned a product!");
 
 
-                                    returns.returnRental(LocalDate.now());
-                                    System.out.println("Successfully returned a product!");
+                                        returns.returnRental(LocalDate.now());
+                                        System.out.println("Successfully returned a product!");
 
 
-                                    String writtenReview;
-                                    System.out.println("Leave a numerical rating between 1 and 5.");
-                                    Integer productRating = Utilities.intInput();
-                                    System.out.println("Would you like to leave a written review?\n" +
-                                            "1. Yes" +
-                                            "\n2. No");
-                                    Integer input = Utilities.intInput();
-                                    if (input == 1) {
-                                        //leave written review!
-                                        writtenReview = Utilities.stringInput();
-                                    } else if (input == 2) {
-                                        // dont leave written review!
-                                        writtenReview = "No written review";
-                                    } else {
-                                        System.out.println("Wrong input! Cancelling written review.");
-                                        writtenReview = "No written review";
+                                        String writtenReview;
+                                        System.out.println("Leave a numerical rating between 1 and 5.");
+                                        Integer productRating = Utilities.intInput();
+                                        System.out.println("Would you like to leave a written review?\n" +
+                                                "1. Yes" +
+                                                "\n2. No");
+                                        Integer input = Utilities.intInput();
+                                        if (input == 1) {
+                                            //leave written review!
+                                            writtenReview = Utilities.stringInput();
+                                        } else if (input == 2) {
+                                            // dont leave written review!
+                                            writtenReview = "No written review";
+                                        } else {
+                                            System.out.println("Wrong input! Cancelling written review.");
+                                            writtenReview = "No written review";
 
+                                        }
+
+                                        Rating r = new Rating(productRating, writtenReview);
+                                        p.ratings.add(productRating);
+                                        rating.add(r);
+                                        ratingsHash.put(p.ratings, p);
+                                        System.out.println("Successfully submitted your review!");
+
+                                        mainMethod();
                                     }
 
-                                    Rating r = new Rating(productRating, writtenReview);
-                                    p.ratings.add(productRating);
-                                    rating.add(r);
-                                    ratingsHash.put(p.ratings, p);
-                                    System.out.println("Successfully submitted your review!");
-
-                                    mainMethod();
                                 }
-
-                            }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
                                         " Memberships!\n" +
@@ -878,8 +920,81 @@ public class DartController {
                                 }
                             }
 
-                            case 6 -> { }
+                            case 6 -> {
 
+
+                                option = intInput("Would you like to sort by:\n" +
+                                        "1. Best average ratings\n" +
+                                        "2. Release year");
+
+                                switch(option) {
+                                    case 1 -> {
+                                        Product currentProduct = null;
+                                        render ("Showing products sorted by best rated.");
+                                        for (double j = 5; j > 0; j = j - 0.01) {
+                                            double k = j + 0.01;
+                                            for (int i = 0; i < products.size(); i++){
+                                                currentProduct = products.get(i);
+                                                if (products.get(i).getAverageRatings() >= j && products.get(i).getAverageRatings() <= k
+                                                        && currentProduct instanceof Game ){
+                                                    System.out.println(currentProduct);
+                                                }
+                                            }
+                                        } // this for loop is not perfect. It tests a product for every 0.01th rating value
+                                        // it takes a lot of memory too.
+                                        // Check rating of 5, print product, check rating of 4.99, print product check rating of
+
+                                        System.out.println("===SONG ALBUMS===");
+
+                                        currentProduct = null;
+                                        for (double j = 5; j >= 0; j = j - 0.01) {
+                                            double k = j + 0.01;
+                                            for (int i = 0; i < products.size(); i++){
+                                                currentProduct = products.get(i);
+                                                if (products.get(i).getAverageRatings() >= j && products.get(i).getAverageRatings() <= k
+                                                        && currentProduct instanceof Album ){
+                                                    System.out.println(currentProduct);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    case 2 -> {
+                                        Product currentProduct = null;
+                                        render ("Showing products sorted by release year.");
+
+                                        System.out.println("===GAMES===");
+
+                                        for (double j = LocalDate.now().getYear(); j > 1900; j--) {
+                                            for (int i = 0; i < products.size(); i++){
+                                                currentProduct = products.get(i);
+                                                if (products.get(i).getReleaseYear() == j
+                                                        && currentProduct instanceof Game ){
+                                                    System.out.println(currentProduct);
+                                                }
+                                            }
+                                        }
+
+                                        System.out.println("===SONG ALBUMS===");
+                                        currentProduct = null;
+                                        for (double j = LocalDate.now().getYear(); j > 1900; j--) {
+                                            for (int i = 0; i < products.size(); i++){
+                                                currentProduct = products.get(i);
+                                                if (products.get(i).getReleaseYear() == j
+                                                        && currentProduct instanceof Album ){
+                                                    System.out.println(currentProduct);
+                                                }
+                                            }
+                                        }
+                                    }default ->{
+                                        renderExit("Wrong input. Returning to previous menu.");
+                                    }
+                                }
+
+                            }
+                            case 7 -> {
+                                mainMethod();
+                            }
                             default -> {
                                 renderError("Your input was wrong.");
                             }

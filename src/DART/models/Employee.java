@@ -175,7 +175,7 @@ public class Employee {
                 switch (modification) {
                     case "name" -> customers.get(i).setName();
                     case "password" -> customers.get(i).setPassword();
-                    case "membership" -> customers.get(i).setMembership();
+                    case "membership" -> customers.get(i).upgradeMembership();
                     default -> System.out.print("Did not recognize that modification.");
                 }
                 return;

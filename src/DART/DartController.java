@@ -9,6 +9,8 @@ import DART.models.products.Game;
 import DART.models.products.Product;
 import DART.models.products.Rating;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -308,7 +310,7 @@ public class DartController {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         System.out.println("Initializing DART . . .\n");
         exampleProducts();
         exampleEmployees();
@@ -316,7 +318,7 @@ public class DartController {
         mainMethod();
     }
 
-    public static void mainMethod() {
+    public static void mainMethod() throws FileNotFoundException {
 
 
         mainMenuPrint();

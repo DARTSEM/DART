@@ -273,7 +273,8 @@ public class DartController {
                 "4. View most profitable product\n" +
                 "5. View rental frequency\n" +
                 "6. View best customer\n" +
-                "7. Return to Main Menu\n");
+                "7. Add from text file\n" +
+                "8. Return to Main Menu\n");
     }
 
     public static void employeeMenuPrint() {
@@ -392,6 +393,59 @@ public class DartController {
                                 System.out.println("Here is your best customer:\n" + bestCustomer());
                             }
                             case 7 -> {
+                                Scanner input = new Scanner(new File("src/Stock.txt"));
+                                input.useDelimiter(";");
+
+                                while (input.hasNext()) {
+                                    String inputType = input.nextLine();
+                                    String[] inputSplitter = inputType.split(";");
+                                    if (inputType.contains("Game")) {
+                                        String title = inputSplitter[1];
+                                        String genre = inputSplitter[2];
+                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]);
+                                        int releaseYear = Integer.parseInt(inputSplitter[4]);
+                                        boolean available = true;
+
+                                        Game g = new Game(title, genre, releaseYear, dailyRentFee, available);
+                                        Employee.addGame(g, products);
+                                        System.out.println(g);
+
+                                    } else if (inputType.contains("Album")) {
+                                        String title = inputSplitter[1];
+                                        String artist = inputSplitter[2];
+                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]);
+                                        int releaseYear = Integer.parseInt(inputSplitter[4]);
+
+                                        Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
+                                        Employee.addAlbum(s, products);
+                                        System.out.println(s);
+                                    }
+                                    else if(inputType.contains("Employee")){
+                                        String firstname = inputSplitter[1];
+                                        String lastname = inputSplitter[2];
+                                        int birthYear = Integer.parseInt(inputSplitter[3]);
+                                        String address1 = inputSplitter[4];
+                                        String address2 = inputSplitter[5];
+                                        double salary = Double.parseDouble(inputSplitter[6]);
+
+                                        Employee e = new Employee(firstname, lastname, birthYear, address1, address2, salary);
+                                        manager.addEmployee(e, employees);
+                                        System.out.println(e);
+
+                                    } else if(inputType.contains("Customer")){
+                                        String name = inputSplitter[1];
+                                        String password = inputSplitter[2];
+                                        String membership = inputSplitter[3];
+                                        MembershipEnum membershipEnum = MembershipEnum.valueOf(membership);
+
+                                        Customer c = new Customer(name, password, membershipEnum);
+                                        Employee.addCustomer(c, customers);
+                                        System.out.println(c);
+
+                                    }
+                                }
+                            }
+                            case 8 -> {
                                 mainMethod();
                             }
                             default -> {

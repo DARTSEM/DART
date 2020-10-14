@@ -398,15 +398,17 @@ public class DartController {
                                 Scanner input = new Scanner(new File("src/Stock.txt"));
                                 input.useDelimiter(";");
 
-                                while (input.hasNext()) {
+                                while (input.hasNext()) { //this basically keeps going through stock.txt until it runs out of text
                                     String inputType = input.nextLine();
-                                    String[] inputSplitter = inputType.split(";");
-                                    if (inputType.contains("Game")) {
+                                    String[] inputSplitter = inputType.split(";"); //this is awesome! it basically splits the input
+                                                                                        //using the provided splitter into different strings!
+                                    if (inputType.contains("Game")) {                  // i would've used enums for game and album,
+                                                                                    // but wanted to keep the code consistent with employee and customer, which arent enums.
                                         String title = inputSplitter[1];
                                         String genre = inputSplitter[2];
-                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]);
-                                        int releaseYear = Integer.parseInt(inputSplitter[4]);
-                                        boolean available = true;
+                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]); //since inputSplitter can only divide a string, we turn this from a string to a double.
+                                        int releaseYear = Integer.parseInt(inputSplitter[4]); //same as above but with int.
+                                        boolean available = true; //a game is available upon release.
 
                                         Game g = new Game(title, genre, releaseYear, dailyRentFee, available);
                                         Employee.addGame(g, products);
@@ -437,10 +439,9 @@ public class DartController {
                                     } else if(inputType.contains("Customer")){
                                         String name = inputSplitter[1];
                                         String password = inputSplitter[2];
-                                        String membership = inputSplitter[3];
-                                        MembershipEnum membershipEnum = MembershipEnum.valueOf(membership);
-
-                                        Customer c = new Customer(name, password, membershipEnum);
+                                        MembershipEnum membership = MembershipEnum.valueOf(inputSplitter[3]);  //this basically takes in the string declared in stock.txt
+                                                                                                              // and tries to find an enum written in the same manner.
+                                        Customer c = new Customer(name, password, membership);
                                         Employee.addCustomer(c, customers);
                                         System.out.println(c);
 

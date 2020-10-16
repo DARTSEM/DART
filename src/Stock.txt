@@ -1,0 +1,4 @@
+Game;Totally Real Adventure Game;RPG;50.99;2019
+Album;Politeness Towards The Machine;Politeness Towards The Machine;23.2;2005
+Customer;Consumer Consumptionsson;p;BASIC
+Employee;Hardly;Working;2004;Job Street; Boogie Woogie Lane;24350.50

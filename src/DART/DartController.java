@@ -9,6 +9,8 @@ import DART.models.products.Game;
 import DART.models.products.Product;
 import DART.models.products.Rating;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -273,7 +275,8 @@ public class DartController {
                 "4. View most profitable product\n" +
                 "5. View rental frequency\n" +
                 "6. View best customer\n" +
-                "7. Return to Main Menu\n");
+                "7. Add from text file\n" +
+                "8. Return to Main Menu\n");
     }
 
     public static void employeeMenuPrint() {
@@ -307,7 +310,7 @@ public class DartController {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         System.out.println("Initializing DART . . .\n");
         exampleProducts();
         exampleEmployees();
@@ -315,7 +318,7 @@ public class DartController {
         mainMethod();
     }
 
-    public static void mainMethod() {
+    public static void mainMethod() throws FileNotFoundException {
 
 
         mainMenuPrint();
@@ -392,6 +395,60 @@ public class DartController {
                                 System.out.println("Here is your best customer:\n" + bestCustomer());
                             }
                             case 7 -> {
+                                Scanner input = new Scanner(new File("src/Stock.txt"));
+                                input.useDelimiter(";");
+
+                                while (input.hasNext()) { //this basically keeps going through stock.txt until it runs out of text
+                                    String inputType = input.nextLine();
+                                    String[] inputSplitter = inputType.split(";"); //this is awesome! it basically splits the input
+                                                                                        //using the provided splitter into different strings!
+                                    if (inputType.contains("Game")) {                  // i would've used enums for game and album,
+                                                                                    // but wanted to keep the code consistent with employee and customer, which arent enums.
+                                        String title = inputSplitter[1];
+                                        String genre = inputSplitter[2];
+                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]); //since inputSplitter can only divide a string, we turn this from a string to a double.
+                                        int releaseYear = Integer.parseInt(inputSplitter[4]); //same as above but with int.
+                                        boolean available = true; //a game is available upon release.
+
+                                        Game g = new Game(title, genre, releaseYear, dailyRentFee, available);
+                                        Employee.addGame(g, products);
+                                        System.out.println(g);
+
+                                    } else if (inputType.contains("Album")) {
+                                        String title = inputSplitter[1];
+                                        String artist = inputSplitter[2];
+                                        Double dailyRentFee = Double.parseDouble(inputSplitter[3]);
+                                        int releaseYear = Integer.parseInt(inputSplitter[4]);
+
+                                        Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
+                                        Employee.addAlbum(s, products);
+                                        System.out.println(s);
+                                    }
+                                    else if(inputType.contains("Employee")){
+                                        String firstname = inputSplitter[1];
+                                        String lastname = inputSplitter[2];
+                                        int birthYear = Integer.parseInt(inputSplitter[3]);
+                                        String address1 = inputSplitter[4];
+                                        String address2 = inputSplitter[5];
+                                        double salary = Double.parseDouble(inputSplitter[6]);
+
+                                        Employee e = new Employee(firstname, lastname, birthYear, address1, address2, salary);
+                                        manager.addEmployee(e, employees);
+                                        System.out.println(e);
+
+                                    } else if(inputType.contains("Customer")){
+                                        String name = inputSplitter[1];
+                                        String password = inputSplitter[2];
+                                        MembershipEnum membership = MembershipEnum.valueOf(inputSplitter[3]);  //this basically takes in the string declared in stock.txt
+                                                                                                              // and tries to find an enum written in the same manner.
+                                        Customer c = new Customer(name, password, membership);
+                                        Employee.addCustomer(c, customers);
+                                        System.out.println(c);
+
+                                    }
+                                }
+                            }
+                            case 8 -> {
                                 mainMethod();
                             }
                             default -> {
@@ -931,6 +988,10 @@ public class DartController {
                                 switch(option) {
                                     case 1 -> {
                                         Product currentProduct = null;
+                                        Product anotherProduct = null;
+
+                                        employee.printAllProducts(products);
+
                                         render ("Showing products sorted by best rated.");
                                         for (double j = 5; j > 0; j = j - 0.01) {
                                             double k = j + 0.01;
@@ -961,32 +1022,17 @@ public class DartController {
 
                                     }
                                     case 2 -> {
-                                        Product currentProduct = null;
-                                        render ("Showing products sorted by release year.");
+                                        products.sort(Collections.reverseOrder());
+                                        // ^ is the same thing as Collections.sort(products, Collections.reverseOrder());
 
+                                        render ("Showing products sorted by release year.");
                                         System.out.println("===GAMES===");
 
-                                        for (double j = LocalDate.now().getYear(); j > 1900; j--) {
-                                            for (int i = 0; i < products.size(); i++){
-                                                currentProduct = products.get(i);
-                                                if (products.get(i).getReleaseYear() == j
-                                                        && currentProduct instanceof Game ){
-                                                    System.out.println(currentProduct);
-                                                }
-                                            }
-                                        }
+                                        employee.printAllGames(products);
+
 
                                         System.out.println("===SONG ALBUMS===");
-                                        currentProduct = null;
-                                        for (double j = LocalDate.now().getYear(); j > 1900; j--) {
-                                            for (int i = 0; i < products.size(); i++){
-                                                currentProduct = products.get(i);
-                                                if (products.get(i).getReleaseYear() == j
-                                                        && currentProduct instanceof Album ){
-                                                    System.out.println(currentProduct);
-                                                }
-                                            }
-                                        }
+                                        employee.printAllAlbums(products);
                                     }default ->{
                                         renderExit("Wrong input. Returning to previous menu.");
                                     }

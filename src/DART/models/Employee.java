@@ -105,7 +105,7 @@ public class Employee {
 
 
     // GAMES stuff
-    public void addGame(Game game, List<Product> games) {
+    public static void addGame(Game game, List<Product> games) {
         games.add(game);
     }
 
@@ -131,7 +131,7 @@ public class Employee {
 
     // Album stuff
 
-    public void addAlbum(Album Album, List<Product> Albums) {
+    public static void addAlbum(Album Album, List<Product> Albums) {
         Albums.add(Album);
     }
 
@@ -156,7 +156,7 @@ public class Employee {
 
     // CUSTOMER stuff
 
-    public void addCustomer(Customer customer, ArrayList<Customer> customers) {
+    public static void addCustomer(Customer customer, ArrayList<Customer> customers) {
         customers.add(customer);
     }
 

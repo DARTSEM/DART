@@ -6,9 +6,10 @@ import DART.models.Customer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
-public class Product {
+public class Product implements Comparable<Product> {
     private UUID Id;
     private String title;
     private double dailyRentFee;
@@ -89,5 +90,26 @@ public class Product {
         }
         return availablePrint;
     }
+    @Override
+    public int compareTo(Product anotherProduct) {
+
+        if(this.releaseYear < anotherProduct.getReleaseYear()) {
+            return -1;
+        } else if (this.releaseYear == anotherProduct.getReleaseYear()) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+    /* public int compareTo(Product anotherProduct) {
+
+        if(this.averageRating < anotherProduct.getReleaseYear()) {
+            return -1;
+        } else if (this.averageRating == anotherProduct.getReleaseYear()) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } */
 }
 

@@ -283,9 +283,10 @@ public class DartController {
                 "5. View rental frequency\n" +
                 "6. View best customer\n" +
                 "7. Add from text file\n" +
-                "8. Return to Main Menu\n");
+                "8. Export rentals to text file\n" +
+                "9. Return to Main Menu\n");
     }
-
+    
     public static void employeeMenuPrint() {
         System.out.println(Utilities.line() + "Employee Screen - Type one of the options below:\n" +
                 "1. Register a product\n" +
@@ -455,7 +456,25 @@ public class DartController {
                                     }
                                 }
                             }
-                            case 8 -> {
+                           case 8 -> {
+                                try {
+                                    FileWriter fw = new FileWriter("Rentals.txt");
+                                    for (int i = 0; i < rentals.size(); i++) {
+                                        Rental r = rentals.get(i);
+                                        String customerId = String.valueOf(r.getCustomer().getId());
+                                        String productId = String.valueOf(r.getProduct().getId());
+                                        String itemTitle = String.valueOf(r.getProduct().getTitle());
+                                        String totalCost = String.valueOf(r.totalRentFee());
+                                        String s = customerId +";"+ productId +";"+ itemTitle +";"+ totalCost + "\n";
+                                        fw.write(s);
+                                    }
+                                    fw.close();
+                                } catch (IOException e){
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            case 9 -> {
                                 mainMethod();
                             }
                             default -> {

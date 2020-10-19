@@ -11,6 +11,8 @@ import DART.models.products.Rating;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -286,7 +288,7 @@ public class DartController {
                 "8. Export rentals to text file\n" +
                 "9. Return to Main Menu\n");
     }
-    
+
     public static void employeeMenuPrint() {
         System.out.println(Utilities.line() + "Employee Screen - Type one of the options below:\n" +
                 "1. Register a product\n" +
@@ -409,9 +411,9 @@ public class DartController {
                                 while (input.hasNext()) { //this basically keeps going through stock.txt until it runs out of text
                                     String inputType = input.nextLine();
                                     String[] inputSplitter = inputType.split(";"); //this is awesome! it basically splits the input
-                                                                                        //using the provided splitter into different strings!
+                                    //using the provided splitter into different strings!
                                     if (inputType.contains("Game")) {                  // i would've used enums for game and album,
-                                                                                    // but wanted to keep the code consistent with employee and customer, which arent enums.
+                                        // but wanted to keep the code consistent with employee and customer, which arent enums.
                                         String title = inputSplitter[1];
                                         String genre = inputSplitter[2];
                                         Double dailyRentFee = Double.parseDouble(inputSplitter[3]); //since inputSplitter can only divide a string, we turn this from a string to a double.
@@ -448,7 +450,7 @@ public class DartController {
                                         String name = inputSplitter[1];
                                         String password = inputSplitter[2];
                                         MembershipEnum membership = MembershipEnum.valueOf(inputSplitter[3]);  //this basically takes in the string declared in stock.txt
-                                                                                                              // and tries to find an enum written in the same manner.
+                                        // and tries to find an enum written in the same manner.
                                         Customer c = new Customer(name, password, membership);
                                         Employee.addCustomer(c, customers);
                                         System.out.println(c);
@@ -456,7 +458,7 @@ public class DartController {
                                     }
                                 }
                             }
-                           case 8 -> {
+                            case 8 -> {
                                 try {
                                     FileWriter fw = new FileWriter("Rentals.txt");
                                     for (int i = 0; i < rentals.size(); i++) {
@@ -826,7 +828,7 @@ public class DartController {
                                             p = products.get(i);
                                         }
                                     }
-                                     //EDIT1 - just added +6 as placeholder to show feat 12.3
+                                    //EDIT1 - just added +6 as placeholder to show feat 12.3
                                     int returnDay = LocalDate.now().getDayOfMonth() +6; //returnday = 25
 
                                     int currentDay = LocalDate.now().getDayOfMonth();
@@ -870,9 +872,9 @@ public class DartController {
 
                                     }
 
-                                    }
-
                                 }
+
+                            }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
                                         " Memberships!\n" +

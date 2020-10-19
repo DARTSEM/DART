@@ -45,7 +45,16 @@ public class Utilities {
         }
         return value;
     }
+    //EDIT1
+    public static double InputRenderNoNegative() {
 
+        double value = doubleInput();
+        while (value < 0 && value == value){
+            System.out.println("Invalid operation. ");
+            value = doubleInput();
+        }
+       return value;
+    }
 
     public static String stringInput() {
         return scan.nextLine();
@@ -73,5 +82,8 @@ public class Utilities {
         System.out.println("Your input was the wrong type, it must be " + wrongInputInfo + " Try again:");
 
     }
+
 }
+
+
 

@@ -37,6 +37,8 @@ public class DartController {
         rental.returnRental(returnDate);
         //returns total amount incurred
         return rental.totalRentFee();
+
+
     }
 
     //modify to reflect changes in architecture
@@ -227,6 +229,11 @@ public class DartController {
     public static double doubleInputNoNegative(String message, String error) {
         System.out.println(message);
         return Utilities.doubleInputNoNegative(error);
+    }
+    //EDIT1
+    public static double InputRenderNoNegative(String message){
+        System.out.println(message);
+        return Utilities.InputRenderNoNegative();
     }
 
     public static String stringInput(String message) {
@@ -758,7 +765,7 @@ public class DartController {
                                     render("You are only allowed to rent " + maxRentText  + " product" + plural + "!");
                                 }
                             }
-
+                            //  Return a game
                             case 2 -> {
                                 System.out.println("===GAMES===");
                                 employee.printAllGames(products);
@@ -800,15 +807,20 @@ public class DartController {
                                             p = products.get(i);
                                         }
                                     }
+                                     //EDIT1 - just added +6 as placeholder to show feat 12.3
+                                    int returnDay = LocalDate.now().getDayOfMonth() +6; //returnday = 25
 
+                                    int currentDay = LocalDate.now().getDayOfMonth();
+
+                                    if(returnDay == currentDay || returnDay > currentDay) {
+                                        //InputRenderNoNegative should be added here if needed v
+                                        System.out.println("Invalid operation. Upon returning an item, the number of days rented must be positive.");
+                                        mainMethod();
+
+                                    } else {
 
                                         returns.returnRental(LocalDate.now());
                                         System.out.println("Successfully returned a product!");
-
-
-                                        returns.returnRental(LocalDate.now());
-                                        System.out.println("Successfully returned a product!");
-
 
                                         String writtenReview;
                                         System.out.println("Leave a numerical rating between 1 and 5.");
@@ -836,6 +848,9 @@ public class DartController {
                                         System.out.println("Successfully submitted your review!");
 
                                         mainMethod();
+
+                                    }
+
                                     }
 
                                 }
@@ -1072,3 +1087,4 @@ public class DartController {
         }
     }
 }
+

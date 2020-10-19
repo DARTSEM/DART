@@ -232,11 +232,6 @@ public class DartController {
         System.out.println(message);
         return Utilities.doubleInputNoNegative(error);
     }
-    //EDIT1
-    public static double InputRenderNoNegative(String message){
-        System.out.println(message);
-        return Utilities.InputRenderNoNegative();
-    }
 
     public static String stringInput(String message) {
         System.out.println(message);
@@ -828,19 +823,17 @@ public class DartController {
                                             p = products.get(i);
                                         }
                                     }
-                                    //EDIT1 - just added +6 as placeholder to show feat 12.3
-                                    int returnDay = LocalDate.now().getDayOfMonth(); //returnday = 25
 
-                                    int currentDay = LocalDate.now().getDayOfMonth() + 3;
+                                    //EDIT1 - OCT20
+                                    returns.returnRental(LocalDate.now());
+                                    System.out.println(returns.getRentDate());
+                                    System.out.println(returns.getReturnDate());
 
-                                    if(returnDay > currentDay) {
-                                        //InputRenderNoNegative should be added here if needed v
-                                        System.out.println("Invalid operation. Upon returning an item, the number of days rented must be positive.");
-                                        mainMethod();
+                                    if(!returns.getReturnDate().isAfter(returns.getRentDate())) {
+                                        renderError("Invalid operation. Upon returning an item, the number of days rented must be positive.");
 
                                     } else {
 
-                                        returns.returnRental(LocalDate.now());
                                         System.out.println("Successfully returned a product!");
 
                                         String writtenReview;

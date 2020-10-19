@@ -49,6 +49,15 @@ public class Rental {
 
     public Product getProduct() { return this.product; }
 
+    //EDIT1 - OCT20
+    public LocalDate getRentDate() {
+        return this.rentDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return this.returnDate;
+    }
+
     @Override
     public String toString() {
         return getCustomer().getId() + " : " + totalDays() + " , " + getProduct().getId() + ".";

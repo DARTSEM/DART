@@ -7,6 +7,7 @@ import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,10 +86,11 @@ public class Employee {
         return netSalary + calculateBonusSalary();
     }
 
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
     @Override
     public String toString() {
         return getId() + " : " + getName() + " " + getBirthYear() + " (" + getAge() + " years old) " +
-                calculateNetSalary() + " SEK.";
+                df2.format(calculateNetSalary()) + " SEK.";
         // product.Method  VS  product
     }
 

@@ -798,21 +798,8 @@ public class DartController {
                                     }
                                 }
 
-                                /*
-                                Game game = null;
-
-                                for (int i = 0; i < products.size(); i++) {
-                                    Product currentProduct = products.get(i);
-                                    if (currentProduct.getId().toString().equals(uuid)) {
-                                        if (products.get(i).getProductType() == ProductType.ALBUM)
-                                            game = (Game) products.get(i);
-                                    }
-                                }
-                                */
-
                                 if (returns == null) {
                                     System.out.println("Could not find the ID!");
-                                    mainMethod(); // temporary solution, need to fix the while loop
                                 } else {
 
                                     Product p = null;
@@ -829,7 +816,7 @@ public class DartController {
                                     System.out.println(returns.getRentDate());
                                     System.out.println(returns.getReturnDate());
 
-                                    if(!returns.getReturnDate().isAfter(returns.getRentDate())) {
+                                    if(returns.getReturnDate().isAfter(returns.getRentDate())) {
                                         renderError("Invalid operation. Upon returning an item, the number of days rented must be positive.");
 
                                     } else {
@@ -837,8 +824,14 @@ public class DartController {
                                         System.out.println("Successfully returned a product!");
 
                                         String writtenReview;
+                                        Integer productRating;
                                         System.out.println("Leave a numerical rating between 1 and 5.");
-                                        Integer productRating = Utilities.intInput();
+                                        do{
+                                        productRating = Utilities.intInput();
+                                        if (productRating <= 0 || productRating > 5){
+                                            System.out.println("Please input a numerical rating between 1 and 5.");
+                                        }
+                                        } while (productRating <= 0 || productRating > 5);
                                         System.out.println("Would you like to leave a written review?\n" +
                                                 "1. Yes" +
                                                 "\n2. No");
@@ -861,12 +854,10 @@ public class DartController {
                                         ratingsHash.put(p.ratings, p);
                                         System.out.println("Successfully submitted your review!");
 
-                                        mainMethod();
-
                                     }
 
                                 }
-
+                                customerMenuPrint();
                             }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +

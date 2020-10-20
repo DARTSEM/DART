@@ -3,6 +3,7 @@ package DART.models.products;
 import DART.enums.ProductType;
 import DART.models.Customer;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class Product implements Comparable<Product> {
         this.available = true;
     }
 
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
 
     public double getAverageRatings() {
@@ -81,6 +83,7 @@ public class Product implements Comparable<Product> {
         }
         return sum;
     }
+
     public String printAvailable() {
         String availablePrint;
         if (available == true) {
@@ -89,6 +92,16 @@ public class Product implements Comparable<Product> {
             availablePrint = "UNAVAILABLE";
         }
         return availablePrint;
+    }
+
+    public String checkRating(){
+        String checkRating = null;
+        if(getAverageRatings() <= 0){
+            checkRating = " - No current ratings.";
+        } else {
+            checkRating = "Average rating of: " + String.valueOf(df2.format(getAverageRatings()));
+        }
+        return checkRating;
     }
     @Override
     public int compareTo(Product anotherProduct) {

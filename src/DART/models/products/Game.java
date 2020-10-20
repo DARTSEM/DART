@@ -23,6 +23,6 @@ public class Game extends Product {
     @Override
     public String toString() {
         return getId() + " : '" + getTitle() + "'. Genre: " + getGenre()  + ". Released in "
-                + getReleaseYear() + ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + ". Average rating of: " + df2.format(getAverageRatings());
+                + getReleaseYear() + ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + checkRating();
     }
 }

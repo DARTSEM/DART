@@ -19,11 +19,10 @@ public class Album extends Product {
         return artist;
     }
 
-    private static DecimalFormat df2 = new DecimalFormat("#.##");
     @Override
     public String toString() {
         return getId() + " : '" + getTitle() + "' by " + getArtist() + ". Released in " + getReleaseYear() +
-                ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + ". Average rating of: " + df2.format(getAverageRatings());
+                ". Price: " + getDailyRentFee() + " SEK/day. - " + printAvailable() + ". Average rating of: " + checkRating();
     }
 }
 

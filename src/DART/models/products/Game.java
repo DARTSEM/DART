@@ -19,7 +19,6 @@ public class Game extends Product {
     }
 
 
-    private static DecimalFormat df2 = new DecimalFormat("#.##");
     @Override
     public String toString() {
         return getId() + " : '" + getTitle() + "'. Genre: " + getGenre()  + ". Released in "

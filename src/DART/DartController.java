@@ -169,10 +169,10 @@ public class DartController {
         Customer example2 = new Customer("Guy O'Hare", "p", MembershipEnum.SILVER);
         Customer example3 = new Customer("John McJohn", "p", MembershipEnum.BASIC);
         Customer example4 = new Customer("Edmonton Son of Daniel", "p", MembershipEnum.PLATINUM);
-        employee.addCustomer(example, customers);
-        employee.addCustomer(example2, customers);
-        employee.addCustomer(example3, customers);
-        employee.addCustomer(example4, customers);
+        Employee.addCustomer(example, customers);
+        Employee.addCustomer(example2, customers);
+        Employee.addCustomer(example3, customers);
+        Employee.addCustomer(example4, customers);
     }
 
     public static void exampleProducts() {
@@ -183,9 +183,9 @@ public class DartController {
                 50, true);
         Album exampleAlbum3 = new Album("Bruh", "Bruh Sound Effects", 2011,
                 25.5, true);
-        employee.addAlbum(exampleAlbum, products);
-        employee.addAlbum(exampleAlbum2, products);
-        employee.addAlbum(exampleAlbum3, products);
+        Employee.addAlbum(exampleAlbum, products);
+        Employee.addAlbum(exampleAlbum2, products);
+        Employee.addAlbum(exampleAlbum3, products);
         exampleAlbum.ratings.add(4);
         exampleAlbum2.ratings.add(3);
         exampleAlbum3.ratings.add(2);
@@ -194,9 +194,9 @@ public class DartController {
         Game exampleGame = new Game("Abandoned 4 Demise 2", "Action", 2009, 112, true);
         Game example2Game = new Game("Groundrim", "RPG", 2011, 32, true);
         Game example3Game = new Game("Not Portal 2", "Puzzle", 2011, 4, true);
-        employee.addGame(exampleGame, products);
-        employee.addGame(example2Game, products);
-        employee.addGame(example3Game, products);
+        Employee.addGame(exampleGame, products);
+        Employee.addGame(example2Game, products);
+        Employee.addGame(example3Game, products);
         exampleGame.ratings.add(3);
         exampleGame.ratings.add(1);
         exampleGame.ratings.add(4);
@@ -355,14 +355,14 @@ public class DartController {
                         int option = intInput("");
                         switch (option) {
                             case 1 -> {
-                                String firstname = stringInputNoEmpty("Please enter the employee's first name: ", "Employee name cannot be empty.");
-                                String lastname = stringInputNoEmpty("Please enter the employee's last name: ", "Employee name cannot be empty.");
-                                int birthyear = intInput("Please enter the birth year of the employee");
+                                String firstName = stringInputNoEmpty("Please enter the employee's first name: ", "Employee name cannot be empty.");
+                                String lastName = stringInputNoEmpty("Please enter the employee's last name: ", "Employee name cannot be empty.");
+                                int birthYear = intInput("Please enter the birth year of the employee");
                                 String address1 = stringInput("Please enter the address 1 of the employee");
                                 String address2 = stringInput("Please enter the address 2 of the employee");
                                 double salary = doubleInputNoNegative("Please enter the salary", "Employee salary cannot be negative.");
 
-                                Employee e = new Employee(firstname, lastname, birthyear, address1, address2, salary);
+                                Employee e = new Employee(firstName, lastName, birthYear, address1, address2, salary);
 
                                 manager.addEmployee(e, employees);
                                 renderSuccess("Employee successfully added!");
@@ -413,9 +413,8 @@ public class DartController {
                                         String genre = inputSplitter[2];
                                         Double dailyRentFee = Double.parseDouble(inputSplitter[3]); //since inputSplitter can only divide a string, we turn this from a string to a double.
                                         int releaseYear = Integer.parseInt(inputSplitter[4]); //same as above but with int.
-                                        boolean available = true; //a game is available upon release.
 
-                                        Game g = new Game(title, genre, releaseYear, dailyRentFee, available);
+                                        Game g = new Game(title, genre, releaseYear, dailyRentFee, true); //a game is always available upon release
                                         Employee.addGame(g, products);
                                         System.out.println(g);
 
@@ -455,14 +454,16 @@ public class DartController {
                             }
                             case 8 -> {
                                 try {
-                                    FileWriter fw = new FileWriter("Rentals.txt");
+                                    FileWriter fw = new FileWriter("Rentals.txt"); //filewriter writes to files. duh. it creates rentals.txt
+                                                                                            //if it doesn't already exist.
                                     for (int i = 0; i < rentals.size(); i++) {
                                         Rental r = rentals.get(i);
                                         String customerId = String.valueOf(r.getCustomer().getId());
                                         String productId = String.valueOf(r.getProduct().getId());
                                         String itemTitle = String.valueOf(r.getProduct().getTitle());
-                                        String totalCost = String.valueOf(r.totalRentFee());
-                                        String s = customerId +";"+ productId +";"+ itemTitle +";"+ totalCost + "\n";
+                                        String totalCost = String.valueOf(r.totalRentFee()); //basically just turns the elements into strings.
+                                        String s = customerId +";"+ productId +";"+ itemTitle +";"+ totalCost + "\n"; //this string is the one added into the filewriter.
+                                                                                                                    //this is because we need to add the line splitter.
                                         fw.write(s);
                                     }
                                     fw.close();
@@ -520,7 +521,7 @@ public class DartController {
                                         double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Game daily rent fee cannot be negative.");
 
                                         Game g = new Game(title, genre, releaseYear, dailyRentFee, true);
-                                        employee.addGame(g, products);
+                                        Employee.addGame(g, products);
                                         renderSuccess("Game created!");
                                     }
                                     case 2 -> {
@@ -539,7 +540,7 @@ public class DartController {
                                         double dailyRentFee = doubleInputNoNegative("Enter the daily rent fee: ", "Album rent fee cannot be negative.");
 
                                         Album s = new Album(title, artist, releaseYear, dailyRentFee, true);
-                                        employee.addAlbum(s, products);
+                                        Employee.addAlbum(s, products);
                                         renderSuccess("Song Album created!");
                                     }
                                     default -> {
@@ -562,7 +563,7 @@ public class DartController {
                                 MembershipEnum membership = MembershipEnum.BASIC;
 
                                 Customer c = new Customer(name, password, membership);
-                                employee.addCustomer(c, customers);
+                                Employee.addCustomer(c, customers);
                                 renderSuccess("Customer successfully added!");
                             }
 
@@ -811,10 +812,7 @@ public class DartController {
                                         }
                                     }
 
-                                    //EDIT1 - OCT20
                                     returns.returnRental(LocalDate.now());
-                                    System.out.println(returns.getRentDate());
-                                    System.out.println(returns.getReturnDate());
 
                                     if(returns.getReturnDate().isAfter(returns.getRentDate())) {
                                         renderError("Invalid operation. Upon returning an item, the number of days rented must be positive.");
@@ -829,7 +827,7 @@ public class DartController {
                                         do{
                                         productRating = Utilities.intInput();
                                         if (productRating <= 0 || productRating > 5){
-                                            System.out.println("Please input a numerical rating between 1 and 5.");
+                                            System.out.println("Incorrect input. Please input a numerical rating between 1 and 5.");
                                         }
                                         } while (productRating <= 0 || productRating > 5);
                                         System.out.println("Would you like to leave a written review?\n" +
@@ -857,7 +855,6 @@ public class DartController {
                                     }
 
                                 }
-                                customerMenuPrint();
                             }
                             case 3 -> {
                                 int option3 = intInput("Hey " + c.getName() + "! If you like DART, you will love DART" +
@@ -1007,13 +1004,15 @@ public class DartController {
 
                                 switch(option) {
                                     case 1 -> {
-                                        Product currentProduct = null;
-                                        Product anotherProduct = null;
-
-                                        employee.printAllProducts(products);
+                                        Product currentProduct;
 
                                         render ("Showing products sorted by best rated.");
-                                        for (double j = 5; j > 0; j = j - 0.01) {
+
+                                        Collections.sort(products);
+
+                                        System.out.println("===GAMES===");
+
+                                        for (double j = 5; j >= -1; j = j - 0.01) {
                                             double k = j + 0.01;
                                             for (int i = 0; i < products.size(); i++){
                                                 currentProduct = products.get(i);
@@ -1028,8 +1027,7 @@ public class DartController {
 
                                         System.out.println("===SONG ALBUMS===");
 
-                                        currentProduct = null;
-                                        for (double j = 5; j >= 0; j = j - 0.01) {
+                                        for (double j = 5; j >= -1; j = j - 0.01) { //The display on non-rated products is intentional. To not display them, just switch -1 to 0.
                                             double k = j + 0.01;
                                             for (int i = 0; i < products.size(); i++){
                                                 currentProduct = products.get(i);
@@ -1053,7 +1051,7 @@ public class DartController {
 
                                         System.out.println("===SONG ALBUMS===");
                                         employee.printAllAlbums(products);
-                                    }default ->{
+                                    }default -> {
                                         renderExit("Wrong input. Returning to previous menu.");
                                     }
                                 }
@@ -1072,23 +1070,15 @@ public class DartController {
                     System.exit(0);
 
                 }
+                case "HALLOWEEN" -> {
+                    System.out.println("Boo!");
+                    mainMethod();
+                }
                 default -> {
                     renderError("Your input was wrong.");
                     mainMethod();
                 }
             }
         } while (value != "X");
-    }
-
-    public UUID readUUID() {
-        String input = Utilities.stringInput();
-        UUID retVal = null; //initialize as null otherwise compiler doesn't know what to do with it/ have to give it
-        //initial value
-        try {
-            retVal = UUID.fromString(input); //converts UUID from a string
-            return retVal;
-        } catch (IllegalArgumentException e) {
-            return retVal;
-        }
     }
 }

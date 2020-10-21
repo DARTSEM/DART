@@ -6,7 +6,7 @@ public class Rating {
    private UUID customerId;
    private UUID productId;
    private Integer rating;
-   public String writtenReview;
+   private String writtenReview;
 
    public Rating(Integer rating, String writtenReview){
        this.rating = rating;

@@ -19,11 +19,9 @@ public class Product implements Comparable<Product> {
     private LocalDate returnDate;
     private ProductType productType;
     private int productRating;
-    public ArrayList<Integer> ratings;
-    public Double averageRating;
+    private Double averageRating;
     private int releaseYear;
-
-
+    public ArrayList<Integer> ratings;
 
     public Product(String title, double dailyRentFee, int releaseYear, ProductType productType, boolean available) {
         this.Id = UUID.randomUUID();
@@ -34,7 +32,6 @@ public class Product implements Comparable<Product> {
         this.ratings = new ArrayList<Integer>();
         this.averageRating = averageRating;
         this.releaseYear = releaseYear;
-
     }
 
     public UUID getId() {
@@ -71,7 +68,6 @@ public class Product implements Comparable<Product> {
 
     private static DecimalFormat df2 = new DecimalFormat("#.##");
 
-
     public double getAverageRatings() {
         Integer sum = 0;
         double rating;
@@ -96,13 +92,14 @@ public class Product implements Comparable<Product> {
 
     public String checkRating(){
         String checkRating = null;
-        if(getAverageRatings() <= 0){
+        if(getAverageRatings() == 0){
             checkRating = " - No current ratings.";
         } else {
-            checkRating = "Average rating of: " + String.valueOf(df2.format(getAverageRatings()));
+            checkRating = " - Average rating of: " + String.valueOf(df2.format(getAverageRatings()));
         }
         return checkRating;
     }
+
     @Override
     public int compareTo(Product anotherProduct) {
 
@@ -114,15 +111,5 @@ public class Product implements Comparable<Product> {
             return 1;
         }
     }
-    /* public int compareTo(Product anotherProduct) {
-
-        if(this.averageRating < anotherProduct.getReleaseYear()) {
-            return -1;
-        } else if (this.averageRating == anotherProduct.getReleaseYear()) {
-            return 0;
-        } else {
-            return 1;
-        }
-    } */
 }
 

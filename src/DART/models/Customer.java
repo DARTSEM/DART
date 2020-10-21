@@ -36,12 +36,6 @@ public class Customer {
         this.creditsReceived = 0;
         this.creditsAmount = 0;
         this.nextProductFree = false;
-
-
-    }
-
-    public Customer() {
-
     }
 
     // Messaging stuff

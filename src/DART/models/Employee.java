@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Employee {
+public class Employee implements Comparable<Employee> {
 
     private UUID Id;
     private String firstName;
@@ -190,6 +190,22 @@ public class Employee {
             System.out.println(customers.get(i).toString());
         }
     }
+
+    @Override
+
+    public int compareTo(Employee anotherEmployee) { //sorts products alphabetically by default
+
+        int compare = this.getName().compareTo(anotherEmployee.getName());
+
+        if(compare < 0) {
+            return -1;
+        } else if (compare == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
     /* public Customer findCustomer(UUID id) {
         Customer customer = customers.get(id);
         if (customer == null) {

@@ -101,11 +101,13 @@ public class Product implements Comparable<Product> {
     }
 
     @Override
-    public int compareTo(Product anotherProduct) {
+    public int compareTo(Product anotherProduct) { //sorts products alphabetically by default
 
-        if(this.releaseYear < anotherProduct.getReleaseYear()) {
+        int compare = this.title.compareTo(anotherProduct.getTitle());
+
+        if(compare < 0) {
             return -1;
-        } else if (this.releaseYear == anotherProduct.getReleaseYear()) {
+        } else if (compare == 0) {
             return 0;
         } else {
             return 1;

@@ -3,13 +3,14 @@ package DART.models;
 import DART.enums.MembershipEnum;
 import DART.miscellaneous.Utilities;
 import DART.models.products.Album;
+import DART.models.products.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-public class Customer {
+public class Customer implements Comparable<Customer> {
     private UUID Id;
     private String name;
     private String password;
@@ -38,7 +39,7 @@ public class Customer {
         this.nextProductFree = false;
     }
 
-    // Messaging stuff
+    // Related to Messaging
     public ArrayList<Message> getUserInbox(UUID Id) {
         return inbox.get(Id);
     } // fetches user inbox based off ID
@@ -119,6 +120,7 @@ public class Customer {
         return nextProductFree;
     }
 
+    // "rentingBenefits" is triggered when a product is rented
     public void rentingBenefits() {
         this.amountRent = this.amountRent + 1;
         this.nextProductFree = false;
@@ -210,10 +212,20 @@ public class Customer {
         return getId() + " : " + getName() + " [" + getPassword() + "] - " + getMembership();
     }
 
-    // What customers can do:
 
-    public void addAlbum(Album Album, ArrayList<Album> Albums) {
-        Albums.add(Album);
+    @Override
+
+    public int compareTo(Customer anotherCustomer) { //sorts products alphabetically by default
+
+        int compare = this.name.compareTo(anotherCustomer.getName());
+
+        if(compare < 0) {
+            return -1;
+        } else if (compare == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
 }

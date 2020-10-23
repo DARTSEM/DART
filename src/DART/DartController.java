@@ -214,8 +214,11 @@ public class DartController {
                 "Bruh Street", "Sideway Boulevard", 30000);
         Employee example2Employee = new Employee("Toshiba", "McWorker", 1970,
                 "Dog Street", "Phone Property", 27500);
+        Employee example3Employee = new Employee("Sven", "Painter", 1997,
+                "Canvas Street", "", 21500);
         manager.addEmployee(exampleEmployee, employees);
         manager.addEmployee(example2Employee, employees);
+        manager.addEmployee(example3Employee, employees);
     }
 
 
@@ -320,6 +323,9 @@ public class DartController {
         exampleProducts();
         exampleEmployees();
         exampleCustomers();
+        Collections.sort(products); // sorts all alphabetically
+        Collections.sort(customers);
+        Collections.sort(employees);
         mainMethod();
     }
 
@@ -814,7 +820,7 @@ public class DartController {
 
                                     returns.returnRental(LocalDate.now());
 
-                                    if(returns.getReturnDate().isAfter(returns.getRentDate())) {
+                                    if(!returns.getReturnDate().isAfter(returns.getRentDate())) {
                                         renderError("Invalid operation. Upon returning an item, the number of days rented must be positive.");
 
                                     } else {
@@ -1004,53 +1010,43 @@ public class DartController {
 
                                 switch(option) {
                                     case 1 -> {
-                                        Product currentProduct;
 
                                         render ("Showing products sorted by best rated.");
 
-                                        Collections.sort(products);
+                                        products.sort(new Comparator<Product>() {
+                                            @Override
+                                            public int compare(Product o1, Product o2) {
+                                                return Double.compare(o1.getAverageRatings(), o2.getAverageRatings());
+                                            }
+                                        }.reversed());
 
                                         System.out.println("===GAMES===");
-
-                                        for (double j = 5; j >= -1; j = j - 0.01) {
-                                            double k = j + 0.01;
-                                            for (int i = 0; i < products.size(); i++){
-                                                currentProduct = products.get(i);
-                                                if (products.get(i).getAverageRatings() >= j && products.get(i).getAverageRatings() <= k
-                                                        && currentProduct instanceof Game ){
-                                                    System.out.println(currentProduct);
-                                                }
-                                            }
-                                        } // this for loop is not perfect. It tests a product for every 0.01th rating value
-                                        // it takes a lot of memory too.
-                                        // Check rating of 5, print product, check rating of 4.99, print product check rating of
+                                        employee.printAllGames(products);
 
                                         System.out.println("===SONG ALBUMS===");
+                                        employee.printAllAlbums(products);
 
-                                        for (double j = 5; j >= -1; j = j - 0.01) { //The display on non-rated products is intentional. To not display them, just switch -1 to 0.
-                                            double k = j + 0.01;
-                                            for (int i = 0; i < products.size(); i++){
-                                                currentProduct = products.get(i);
-                                                if (products.get(i).getAverageRatings() >= j && products.get(i).getAverageRatings() <= k
-                                                        && currentProduct instanceof Album ){
-                                                    System.out.println(currentProduct);
-                                                }
-                                            }
-                                        }
 
                                     }
                                     case 2 -> {
-                                        products.sort(Collections.reverseOrder());
-                                        // ^ is the same thing as Collections.sort(products, Collections.reverseOrder());
 
                                         render ("Showing products sorted by release year.");
-                                        System.out.println("===GAMES===");
 
+                                        products.sort(new Comparator<Product>() {
+                                            @Override
+                                            public int compare(Product o1, Product o2) {
+                                                return Integer.compare(o1.getReleaseYear(), o2.getReleaseYear());
+                                            }
+                                        }.reversed());
+
+                                        System.out.println("===GAMES===");
                                         employee.printAllGames(products);
 
 
                                         System.out.println("===SONG ALBUMS===");
                                         employee.printAllAlbums(products);
+
+
                                     }default -> {
                                         renderExit("Wrong input. Returning to previous menu.");
                                     }

@@ -1,9 +1,9 @@
 package DART;
 
-import DART.enums.MembershipEnum;
 import DART.enums.ProductType;
 import DART.miscellaneous.Utilities;
 import DART.models.*;
+import DART.models.customer.*;
 import DART.models.products.Album;
 import DART.models.products.Game;
 import DART.models.products.Product;
@@ -165,10 +165,10 @@ public class DartController {
 
     public static void exampleCustomers() {
         Employee employee = new Employee();
-        Customer example = new Customer("Drake Axelrod", "p", MembershipEnum.GOLD);
-        Customer example2 = new Customer("Guy O'Hare", "p", MembershipEnum.SILVER);
-        Customer example3 = new Customer("John McJohn", "p", MembershipEnum.BASIC);
-        Customer example4 = new Customer("Edmonton Son of Daniel", "p", MembershipEnum.PLATINUM);
+        Customer example = new Customer("Drake Axelrod", "p");
+        Customer example2 = new Customer("Guy O'Hare", "p");
+        Customer example3 = new Customer("John McJohn", "p");
+        Customer example4 = new Customer("Edmonton Son of Daniel", "p");
         Employee.addCustomer(example, customers);
         Employee.addCustomer(example2, customers);
         Employee.addCustomer(example3, customers);
@@ -449,7 +449,17 @@ public class DartController {
                                     } else if(inputType.contains("Customer")){
                                         String name = inputSplitter[1];
                                         String password = inputSplitter[2];
-                                        MembershipEnum membership = MembershipEnum.valueOf(inputSplitter[3]);  //this basically takes in the string declared in stock.txt
+                                        CustomerMembership membership = new BasicCustomer();
+                                        if (inputSplitter[3].equals("BASIC")){
+                                            membership = new BasicCustomer();
+                                        } else if (inputSplitter[3].equals("SILVER")){
+                                            membership = new SilverCustomer();
+                                        } else if (inputSplitter[3].equals("GOLD")) {
+                                            membership = new GoldCustomer();
+                                        } else if (inputSplitter[3].equals("PLATINUM")){
+                                            membership = new PlatinumCustomer();
+                                        }
+                                        //this basically takes in the string declared in stock.txt
                                         // and tries to find an enum written in the same manner.
                                         Customer c = new Customer(name, password, membership);
                                         Employee.addCustomer(c, customers);
@@ -566,7 +576,7 @@ public class DartController {
                                         render("The password you set can't contain any spaces!");
                                     }
                                 }
-                                MembershipEnum membership = MembershipEnum.BASIC;
+                                CustomerMembership membership = new BasicCustomer();
 
                                 Customer c = new Customer(name, password, membership);
                                 Employee.addCustomer(c, customers);
@@ -721,7 +731,6 @@ public class DartController {
 
                     do {
                         customerMenuPrint();
-                        c.setMembershipValues();
                         int option = intInput("");
                         switch (option) {
                             case 1 -> {
@@ -734,7 +743,8 @@ public class DartController {
                                 employee.printAllAlbums(products);
 
                                 if (c.getAmountRent() < c.getMaxRent()) {
-                                    if (c.getMembership() == MembershipEnum.GOLD || c.getMembership() == MembershipEnum.PLATINUM) {
+                                    if (c.getMembership() instanceof GoldCustomer || c.getMembership() instanceof
+                                            PlatinumCustomer) {
                                         render("\nYou currently have " + c.getCreditsAmount() + " credits to spend.\n" +
                                                 "For 5 credits you can rent a product for free!\n" +
                                                 "You will receive " + c.getCreditsReceived() + " credits per item rented!");
@@ -766,13 +776,12 @@ public class DartController {
 
                                     } else {
                                         if (c.getNextProductFree()) {
-                                            c.setDiscount(0);
+                                            // must fix tmr! c.setDiscount(0)
                                             renderSuccess("Your product was rented for free!");
                                         }
 
                                         c.rentingBenefits();
                                         rentProduct(c, p, LocalDate.now());
-                                        c.setMembershipValues(); //  resets Discount values in case free product
                                         renderSuccess("Rented " + p.getTitle() + "!");
 
                                     }
@@ -873,7 +882,7 @@ public class DartController {
                                         "You currently have a " + c.getMembership() + " membership. To upgrade, press 1.");
                                 switch (option3) {
                                     case 1 -> {
-                                        if (c.getMembership() != MembershipEnum.PLATINUM) {
+                                        if (!(c.getMembership() instanceof PlatinumCustomer)) {
                                             c.setUpgradeRequestTrue();
                                             renderSuccess("Your membership will be upgraded to " + c.getNextMembership() +
                                                     " as soon as an employee accepts it.");

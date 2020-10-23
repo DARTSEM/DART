@@ -1,9 +1,7 @@
 package DART.models;
 
-import DART.enums.MembershipEnum;
 import DART.miscellaneous.Utilities;
-import DART.models.products.Album;
-import DART.models.products.Product;
+import DART.models.customer.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,26 +12,34 @@ public class Customer implements Comparable<Customer> {
     private UUID Id;
     private String name;
     private String password;
-    private MembershipEnum membership;
+    private CustomerMembership membership;
     private boolean upgradeRequest;
     private HashMap<UUID, ArrayList<Message>> inbox;
-    private double discount;
     private int amountRent;
-    private int maxRent;
     private int creditsReceived;
     private int creditsAmount;
     private boolean nextProductFree;
+    public Customer(String name, String password) {
+        Id = UUID.randomUUID(); // we don't need user input to make an ID, therefore it's not a parameter in constructor
+        this.name = name;
+        this.password = password;
+        this.membership = new BasicCustomer();
+        this.upgradeRequest = false;
+        this.inbox = new HashMap<UUID, ArrayList<Message>>(); // we have an ArrayList of messages for each customer ID
+        this.amountRent = 0; // the amount of products the customer has rented. It increases when they rent!
+        this.creditsReceived = 0;
+        this.creditsAmount = 0;
+        this.nextProductFree = false;
+    }
 
-    public Customer(String name, String password, MembershipEnum membership) {
+    public Customer(String name, String password, CustomerMembership membership) {
         Id = UUID.randomUUID(); // we don't need user input to make an ID, therefore it's not a parameter in constructor
         this.name = name;
         this.password = password;
         this.membership = membership;
         this.upgradeRequest = false;
         this.inbox = new HashMap<UUID, ArrayList<Message>>(); // we have an ArrayList of messages for each customer ID
-        this.discount = 1.00; // 0% discount!
         this.amountRent = 0; // the amount of products the customer has rented. It increases when they rent!
-        this.maxRent = 1;
         this.creditsReceived = 0;
         this.creditsAmount = 0;
         this.nextProductFree = false;
@@ -88,16 +94,14 @@ public class Customer implements Comparable<Customer> {
         return password;
     }
 
-    public MembershipEnum getMembership() {
-        return membership;
-    }
-
     public boolean getUpgradeRequest() {
         return upgradeRequest;
     }
 
+    public CustomerMembership getMembership() { return membership; }
+
     public double getDiscount() {
-        return discount;
+        return membership.getDiscount();
     }
 
     public double getAmountRent() {
@@ -105,7 +109,7 @@ public class Customer implements Comparable<Customer> {
     }
 
     public double getMaxRent() {
-        return maxRent;
+        return membership.maxRent();
     }
 
     public int getCreditsReceived() {
@@ -124,11 +128,7 @@ public class Customer implements Comparable<Customer> {
     public void rentingBenefits() {
         this.amountRent = this.amountRent + 1;
         this.nextProductFree = false;
-        if (this.getMembership() == MembershipEnum.GOLD) {
-            this.creditsAmount = this.creditsAmount + 2;
-        } else if (this.getMembership() == MembershipEnum.PLATINUM) {
-            this.creditsAmount = this.creditsAmount + 3;
-        }
+        this.creditsAmount = this.creditsAmount + membership.getCredits();
     }
 
     public void resetCreditsAmount() {
@@ -139,46 +139,9 @@ public class Customer implements Comparable<Customer> {
         this.name = Utilities.stringInput();
     }
 
-    public void setPassword() {
+    public void setPassword() { this.password = Utilities.stringInput(); }
 
-        this.password = Utilities.stringInput();
-    }
-
-    public void setDiscount(double value) {
-
-        this.discount = value;
-    }
-
-    public void setNextProductFree(boolean value) {
-        this.nextProductFree = value;
-    }
-
-    public void setMembership() {
-        String input = Utilities.stringInput();
-        MembershipEnum membership = MembershipEnum.valueOf(input);
-
-    }
-
-
-    public void setMembershipValues() {
-        if (getMembership() == MembershipEnum.BASIC) {
-            this.discount = 1.00;
-            this.creditsReceived = 0;
-            this.maxRent = 1;
-        } else if (getMembership() == MembershipEnum.SILVER) {
-            this.discount = 0.90;
-            this.maxRent = 3;
-            this.creditsReceived = 0;
-        } else if (getMembership() == MembershipEnum.GOLD) {
-            this.discount = 0.85;
-            this.maxRent = 5;
-            this.creditsReceived = 2;
-        } else if (getMembership() == MembershipEnum.PLATINUM) {
-            this.discount = 0.75;
-            this.maxRent = 7;
-            this.creditsReceived = 3;
-        }
-    }
+    public void setNextProductFree(boolean value) { this.nextProductFree = value; }
 
     public void setUpgradeRequestTrue() {
         this.upgradeRequest = true;
@@ -191,18 +154,16 @@ public class Customer implements Comparable<Customer> {
     // Membership stuff
     public void upgradeMembership() {
         this.membership = getNextMembership();
-        setMembershipValues();
     }
 
+    public CustomerMembership getNextMembership() {
 
-    public MembershipEnum getNextMembership() {
-
-        if (getMembership() == MembershipEnum.BASIC) {
-            return MembershipEnum.SILVER;
-        } else if (getMembership() == MembershipEnum.SILVER) {
-            return MembershipEnum.GOLD;
-        } else if (getMembership() == MembershipEnum.GOLD) {
-            return MembershipEnum.PLATINUM;
+        if (membership instanceof BasicCustomer) {
+            return new SilverCustomer();
+        } else if (membership instanceof SilverCustomer) {
+            return new GoldCustomer();
+        } else if (membership instanceof GoldCustomer) {
+            return new PlatinumCustomer();
         } else System.out.println("Could not find next membership level.");
         return null;
     }
@@ -212,9 +173,7 @@ public class Customer implements Comparable<Customer> {
         return getId() + " : " + getName() + " [" + getPassword() + "] - " + getMembership();
     }
 
-
     @Override
-
     public int compareTo(Customer anotherCustomer) { //sorts products alphabetically by default
 
         int compare = this.name.compareTo(anotherCustomer.getName());

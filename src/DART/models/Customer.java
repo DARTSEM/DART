@@ -149,6 +149,11 @@ public class Customer implements Comparable<Customer> {
         this.discount = value;
     }
 
+    public void changeAmountRent(int value) {
+
+        this.amountRent = this.amountRent + value;
+    }
+
     public void setNextProductFree(boolean value) {
         this.nextProductFree = value;
     }

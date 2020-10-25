@@ -1,22 +1,8 @@
 package DART.enums;
 
-//MEOWWWWWWW
-
 public enum MembershipEnum {
-    BASIC("BASIC"),
-    SILVER("SILVER"),
-    GOLD("GOLD"),
-    PLATINUM("PLATINUM");
-
-    private final String status;
-
-    MembershipEnum(String status) {
-        this.status = status;
-
-    }
-
-    public String getStatus() {
-        return status;
-
-    }
+    BASIC,
+    SILVER,
+    GOLD,
+    PLATINUM
 }

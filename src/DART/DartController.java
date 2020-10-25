@@ -130,7 +130,7 @@ public class DartController {
         //Map.entry iterates over what we already have in hashmap
         for(Map.Entry<Product, Integer> entry : map.entrySet()) { //hash table (collection of map entries)
             //iterating over entries in map, looking at value for each product
-            System.out.print("The rental frequency for " + entry.getKey().getTitle() + " is " + entry.getValue());
+            System.out.print("The rental frequency for '" + entry.getKey().getTitle() + "' is " + entry.getValue() + "\n");
         }
     }
 
@@ -147,17 +147,6 @@ public class DartController {
     //pass in enumeration albums, games, all
     //filters products by type
     //modify to reflect changes in architecture
-    public static Collection<Product> getProductByType(ProductType productType) {
-        ArrayList<Product> filteredProducts = new ArrayList<>();
-        for (Product product: DartController.products) {
-            if (productType == null) {
-                filteredProducts.add(product);
-            } else if (productType == product.getProductType()) {
-                filteredProducts.add(product);
-            }
-        }
-        return filteredProducts;
-    }
 
     public DartController() {
 
@@ -389,21 +378,22 @@ public class DartController {
                             }
                             case 3 -> {
                                 //rent history
-                                System.out.println("All transactions of all products:\n");
+                                render("All transactions of all products:\n");
                                 manager.printAllRentals(rentals);
                             }
                             case 4 -> {
                                 //most profitable item
-                                System.out.println("The most profitable product is:\n" + mostProfitable());
+                                render("The most profitable product is:\n" + mostProfitable());
 
                             }
                             case 5 -> {
                                 //rent frequency of all items
+                                render("Displaying the frequency of products that have been rented:\n");
                                 rentalFrequency();
                             }
                             case 6 -> {
                                 //retrieve best customer
-                                System.out.println("Here is your best customer:\n" + bestCustomer());
+                                render("Here is your best customer:\n" + bestCustomer());
                             }
                             case 7 -> {
                                 Scanner input = new Scanner(new File("src/Stock.txt"));
@@ -492,7 +482,7 @@ public class DartController {
                 case "E" -> {
                     String ePassword;
                     do {
-                        System.out.println("Please input your password, or press 3 to go back to the main menu:");
+                        render("Please input your password, or press 3 to go back to the main menu:");
                         ePassword = Utilities.stringInput();
 
                         if (ePassword.equals("password123")) {
@@ -500,7 +490,7 @@ public class DartController {
                         } else if (ePassword.equals("3")) {
                             mainMethod();
                         } else {
-                            System.out.println("Wrong password!");
+                            renderError("Wrong password!");
                         }
                     } while (!ePassword.equals("password123"));
 
@@ -576,10 +566,10 @@ public class DartController {
                             case 3 -> {
                                 // view products
 
-                                System.out.println("===GAMES===");
+                                render("===GAMES===");
                                 employee.printAllGames(products);
 
-                                System.out.println("===SONG ALBUMS===");
+                                render("===SONG ALBUMS===");
                                 employee.printAllAlbums(products);
 
                                 int option3 = intInput("\n1. Remove Game\n" +
@@ -674,7 +664,7 @@ public class DartController {
                                 }
                             }
                             case 6 -> { // total rent profit
-                                System.out.println("The total rent profit is: " + getTotalProfit());
+                                render("The total rent profit is: " + getTotalProfit());
                             }
                             case 7 -> {
                                 mainMethod();
@@ -700,7 +690,7 @@ public class DartController {
                             }
                         }
                         if (c == null) {
-                            System.out.println("Could not find the ID, contact an employee if you don't have one!");
+                            renderError("Could not find the ID, contact an employee if you don't have one!");
                             mainMethod();
                         } else {
                             renderSuccess("Attempting to log in as " + c.getName());
@@ -714,7 +704,7 @@ public class DartController {
                         } else if (cPassword.equals("3")) {
                             mainMethod();
                         } else {
-                            System.out.println("Wrong password!");
+                            renderError("Wrong password!");
                             mainMethod();
                         }
                     } while (!cPassword.equals(c.getPassword()));
@@ -725,11 +715,11 @@ public class DartController {
                         int option = intInput("");
                         switch (option) {
                             case 1 -> {
-                                System.out.println("===GAMES===");
+                                render("===GAMES===");
 
                                 employee.printAllGames(products);
 
-                                System.out.println("===SONG ALBUMS===");
+                                render("===SONG ALBUMS===");
 
                                 employee.printAllAlbums(products);
 
@@ -762,7 +752,7 @@ public class DartController {
                                     }
 
                                     if (p == null || !p.getAvailable()) {
-                                        System.out.println("Could not find the ID or product was already rented!");
+                                        renderError("Could not find the ID or product was already rented!");
 
                                     } else {
                                         if (c.getNextProductFree()) {
@@ -790,10 +780,10 @@ public class DartController {
                             }
                             //  Return a game
                             case 2 -> {
-                                System.out.println("===GAMES===");
+                                render("===GAMES===");
                                 employee.printAllGames(products);
 
-                                System.out.println("===SONG ALBUMS===");
+                                render("===SONG ALBUMS===");
                                 employee.printAllAlbums(products);
 
                                 Rental returns = null;
@@ -806,7 +796,7 @@ public class DartController {
                                 }
 
                                 if (returns == null) {
-                                    System.out.println("Could not find the ID!");
+                                    renderError("Could not find the ID!");
                                 } else {
 
                                     Product p = null;
@@ -825,18 +815,20 @@ public class DartController {
 
                                     } else {
 
-                                        System.out.println("Successfully returned a product!");
+                                        renderSuccess("Successfully returned a product!");
+                                        c.changeAmountRent(-1);
+
 
                                         String writtenReview;
                                         Integer productRating;
-                                        System.out.println("Leave a numerical rating between 1 and 5.");
+                                        render("Leave a numerical rating between 1 and 5.");
                                         do{
                                         productRating = Utilities.intInput();
                                         if (productRating <= 0 || productRating > 5){
-                                            System.out.println("Incorrect input. Please input a numerical rating between 1 and 5.");
+                                            render("Incorrect input. Please input a numerical rating between 1 and 5.");
                                         }
                                         } while (productRating <= 0 || productRating > 5);
-                                        System.out.println("Would you like to leave a written review?\n" +
+                                        render("Would you like to leave a written review?\n" +
                                                 "1. Yes" +
                                                 "\n2. No");
                                         Integer input = Utilities.intInput();
@@ -847,7 +839,7 @@ public class DartController {
                                             // dont leave written review!
                                             writtenReview = "No written review";
                                         } else {
-                                            System.out.println("Wrong input! Cancelling written review.");
+                                            renderError("Wrong input! Cancelling written review.");
                                             writtenReview = "No written review";
 
                                         }
@@ -856,7 +848,7 @@ public class DartController {
                                         p.ratings.add(productRating);
                                         rating.add(r);
                                         ratingsHash.put(p.ratings, p);
-                                        System.out.println("Successfully submitted your review!");
+                                        renderSuccess("Successfully submitted your review!");
 
                                     }
 
@@ -961,7 +953,7 @@ public class DartController {
 
                                             }
                                         } catch (Exception e) {
-                                            System.out.println("UUID does not exist! Try again.");
+                                            renderError("UUID does not exist! Try again.");
                                         }
 
 
